@@ -18,61 +18,64 @@ class Vue_navbar_Connexion extends Vue_Generique
     function navBarHabillage()
     {
 ?>
-        <nav>
-            <div class="p-3 text-bg-dark">
-                <div class="container">
-                    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                        <?php if (!isset($_SESSION["identifiant"])) {
-                        ?>
-                            <a href="index.php?module=connexion&action=connexion">
-                                <img class="logo" src="ressource/images/TabA2Z.png" alt="logo Site" width="64" height="64">
-                            </a>
 
-                        <?php } elseif (isset($_SESSION["identifiant"])) {
-                        ?>
-                            <a href="index.php?module=principale">
-                                <img class="logo" src="ressource/images/TabA2Z.png" alt="logo Site" width="64" height="64">
-                            </a>
-                        <?php } ?>
+<nav class="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <!-- Logo -->
+        <a href="index.php?module=principale" class="flex items-center space-x-3 rtl:space-x-reverse">
+            <img src="ressource/images/TabA2Z.png" class="h-8" alt="Site Logo" />
+            <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Ticket Pro Plus</span>
+        </a>
 
-                        <div class="navigation">
-                            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
-                                        <use xlink:href="#bootstrap" />
-                                    </svg>
-                                </a>
-                                <div class="text-end">
-                                    <?php
-                                    //ici on verifie si on est sur la page inscription si c'est le cas alors on affiche pas le bouton sinon on l'affiche
-                                    if (isset(($_GET['action'])) && !($_GET['action'] == "inscription") && (!isset($_SESSION['identifiant']))) {
-                                    ?>
-                                        <button onclick="window.location.href = 'index.php?module=connexion&action=inscription'" type="button" class="btn boutonConnexion">Inscription</button>
-                                        <button onclick="window.location.href = 'index.php?module=administration'" type="button" class="btn btn-outline-light me-2">Administration</button>
-                                    <?php
-                                    }
-                                    //ici on verifie si on est conencter si oui alors on change le bouton conencter par deconnexion
-                                    else if ((!isset($_SESSION['identifiant'])) && isset(($_GET['action'])) && $_GET['action'] != "connexion") {
-                                    ?>
-                                        <button onclick="window.location.href = 'index.php?module=connexion&action=connexion'" type="button" class="btn boutonConnexion">Connexion</button>
-                                        <button onclick="window.location.href = 'index.php?module=administration'" type="button" class="btn btn-outline-light me-2">Administration</button>
-                                    <?php
-                                    }
-                                    //Pour la page admini on met connexion et inscription
-                                    else if (!isset(($_GET['action']))) {
-                                    ?>
-                                        <button onclick="window.location.href = 'index.php?module=connexion&action=inscription'" type="button" class="btn boutonConnexion">Inscription</button>
-                                        <button onclick="window.location.href = 'index.php?module=connexion&action=connexion'" type="button" class="btn btn-outline-light me-2">Connexion</button>
-                                    <?php
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
+
+        <!-- Burger menu -->
+        <button data-collapse-toggle="navbar-solid-bg" type="button"
+            class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            aria-controls="navbar-solid-bg" aria-expanded="false">
+            <span class="sr-only">Open main menu</span>
+            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M1 1h15M1 7h15M1 13h15" />
+            </svg>
+        </button>
+
+        <!-- Menu -->
+        <div class="hidden w-full md:block md:w-auto" id="navbar-solid-bg">
+            <ul
+                class="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
+                <li><a href="#"
+                        class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent">Home</a>
+
+                </li>
+                <li><a href="#"
+                        class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent">Contact</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Boutons de connexion/inscription -->
+        <div class="flex space-x-2 mt-4 md:mt-0">
+            <?php
+            $action = $_GET['action'] ?? null;
+            $estConnecte = isset($_SESSION['identifiant']);
+
+            if (!$estConnecte && $action !== "inscription") {
+                echo '<button onclick="window.location.href = \'index.php?module=connexion&action=inscription\'" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Sign In</button>';
+            }
+
+            if (!$estConnecte && $action !== "connexion") {
+                echo '<button onclick="window.location.href = \'index.php?module=connexion&action=connexion\'" class="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Log in</button>';
+            }
+
+            // Bouton admin toujours visible
+            echo '<button onclick="window.location.href = \'index.php?module=administration\'" class="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Administration</button>';
+            ?>
+        </div>
+    </div>
+
+</nav>
+<br>
+<br>
 <?php
     }
 }
