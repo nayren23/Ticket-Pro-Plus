@@ -22,7 +22,7 @@ class ModeleConnexion extends Modele_Connexion_Generique
         try {
             //ici on teste si l'adresse mail est deja utilise
             $sql = 'Select * from utilisateur WHERE adresseMail=:adresseMail or identifiant=:identifiant';
-            $statement = self::$bdd->prepare($sql);
+            $statement = $this->conn->prepare($sql);
             $statement->execute(array(':adresseMail' => htmlspecialchars($_POST['adresseMail']), ':identifiant' => htmlspecialchars($_POST['identifiant'])));
             $result = $statement->fetch();
             if ($result) {
@@ -30,7 +30,7 @@ class ModeleConnexion extends Modele_Connexion_Generique
             } else {
                 // ici on insere les donnee dans la BDD
                 $sql = 'INSERT INTO utilisateur (adresseMail,identifiant,motDePasse) VALUES(:adresseMail,:identifiant, :motDePasse)';
-                $statement = Connexion::$bdd->prepare($sql);
+                $statement = $this->conn->prepare($sql);
                 $statement->execute(array(':adresseMail' => htmlspecialchars($_POST['adresseMail']), ':identifiant' => htmlspecialchars($_POST['identifiant']), 'motDePasse' => password_hash(htmlspecialchars($_POST['motDePasse']), PASSWORD_DEFAULT))); //vois si pour le mdp on fait htmlspecialchars
                 return 4;
             }

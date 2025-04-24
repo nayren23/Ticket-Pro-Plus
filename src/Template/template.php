@@ -15,6 +15,8 @@ if (constant("a2z") != "rya")
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
 
     <!-- CSS only -->
+    <link href="./public\assets\Style_css\main.css" rel="stylesheet" />
+
     <!-- Script only -->
 </head>
 

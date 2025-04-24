@@ -17,10 +17,10 @@ class Modele_Connexion_Generique extends Database
             try { //On cherche si l'id existe déjà
                 $sql = 'Select * from utilisateur WHERE (identifiant=:identifiant)';
                 $statement = $this->conn->prepare($sql);
-                $statement->execute(array(':identifiant' => htmlspecialchars($_POST['identifiant'])));
+                $statement->execute(array(':identifiant' => htmlspecialchars($_POST['login'])));
                 $result = $statement->fetch();
                 if ($result) { //si l'id est correct alors on verifie le mdp
-                    if (password_verify(htmlspecialchars($_POST['motDePasse']), $result['motDePasse']) && $result['idGroupes'] == $idGroupe) {
+                    if (password_verify(htmlspecialchars($_POST['password']), $result['motDePasse']) && $result['idGroupes'] == $idGroupe) {
                         $_SESSION['identifiant'] = $result['identifiant'];
                         return true; // connexion reussie au site
                     }
