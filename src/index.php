@@ -1,35 +1,31 @@
 <?php
 
 session_start();
-define('SITE_ROOT', __DIR__);
-define("a2z", "rya"); //définition d'une constante pour vérifier ensuite quand on accède au fichier qu'on soit bien passé par l'index
-
-require_once "config/database.php";
-require_once("./Common/Classe_Generique/vue_generique.php");
-require_once("controleur/controleur.php");
-require_once("controleur/controleur_administration.php");
-require_once("./Common/Classe_Generique/controleur_generique.php"); //on le fait ici car il est utilisé par plusiseur controleur
-require_once("./verificationAdmin.php");
-
 require_once __DIR__ . '/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-// Maintenant tu peux accéder à tes variables d'environnement
+define('SITE_ROOT', __DIR__);
+define("APP_SECRET", $_ENV["APP_SECRET"]); //définition d'une constante pour vérifier ensuite quand on accède au fichier qu'on soit bien passé par l'index
+
+require_once "config/Database.php";
+require_once("./Common/GenericClass/GenericView.php");
+require_once("Controller/controller.php");
+require_once("Controller/ControllerAdministration.php");
+require_once("./Common/GenericClass/GenericController.php"); //on le fait ici car il est utilisé par plusieurs Controller
+require_once("./AdminCheck.php");
+
 $conn = new Database();
 
-
 //Pour la partie Admin
-$verifAdmin = new VerifAdmin();
-if ($verifAdmin->verificationConnexionAdmin()) {
-    $controleur = new Controleur_administration();
-    require_once("./Template/template_Administrateur.php"); //affichage du site 
+$adminCheck = new AdminCheck();
+if ($adminCheck->isAdmin()) {
+    $Controller = new ControllerAdministration();
+    require_once("./Template/TemplateAdmin.php"); //affichage du site 
 }
 //Pour la partie Useur
 else {
-    $controleur = new Controleur();
-    require_once("./Template/template.php"); //affichage du site 
+    $Controller = new Controller();
+    require_once("./Template/Template.php"); //affichage du site 
 }
-
-?>
