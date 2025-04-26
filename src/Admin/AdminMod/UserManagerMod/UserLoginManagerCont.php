@@ -37,7 +37,7 @@ class UserLoginManagerCont extends GenericController
 
     public function deleteUser()
     {
-        $adminactuel = $this->model->recuperationIdUser($_SESSION['identifiant']); //pour éviter qu'on puisse supprimé le compte sur lequel on est connecté
+        $adminactuel = $this->model->recuperationIdUser($_SESSION["login"]); //pour éviter qu'on puisse supprimé le compte sur lequel on est connecté
         return $this->model->deleteUser($adminactuel);
     }
 

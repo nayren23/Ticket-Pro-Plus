@@ -49,7 +49,7 @@ class NavbarView extends GenericView
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
                     </li>
                     <li>
-                        <a href="index.php?module=connexion&action=deconnexion"
+                        <a href="index.php?module=login&action=deconnexion"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign
                             out</a>
                     </li>

@@ -17,7 +17,7 @@ class SideBarMenuCompModel extends Database
 
             $sql = 'Select idUser from utilisateur WHERE identifiant=:identifiant';
             $statement = $this->conn->prepare($sql);
-            $statement->execute(array(':identifiant' => $_SESSION['identifiant']));
+            $statement->execute(array(':identifiant' => $_SESSION["login"]));
             $resultat = $statement->fetch();
             return $resultat;
         } catch (PDOException $e) {

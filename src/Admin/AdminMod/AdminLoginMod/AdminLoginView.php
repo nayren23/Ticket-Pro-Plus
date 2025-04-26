@@ -22,7 +22,7 @@ class AdminLoginView extends GenericView
 ?>
     <title>Connexion Admin | Ticket Pro +</title>
     <?php
-    if (!isset($_SESSION["identifiant"])) {
+    if (!isset($_SESSION["login"])) {
     ?>
       <div class="pageCompte">
         <div>
@@ -40,7 +40,7 @@ class AdminLoginView extends GenericView
             <div><input class="saisieText" type="text" placeholder="Identifiant" name="identifiant" required maxlength="50"></div>
 
             <div class="boutonMdp">
-              <input class="saisieText" type="password" id="monEntree" placeholder="Mot de passe" name="motDePasse" required maxlength="100">
+              <input class="saisieText" type="password" id="monEntree" placeholder="Password" name="password" required maxlength="100">
               <button type="button" class="checkboxMdp"> <img alt="oeil affichage mot de passe" id="oeil" src="ressource/images/oeilCacherMdp.png" onclick="basculerAffichageMotDePasse(monEntree,oeil)"> </button>
             </div>
 
@@ -61,7 +61,7 @@ class AdminLoginView extends GenericView
   //fonction pour l'affichage du toast "pop up" pour afficher un message d'erruer si un compte est Inexsistant '
   public function compteInexsistant()
   {
-    if (isset($_SESSION['identifiant'])) {
+    if (isset($_SESSION["login"])) {
       $this->affichageDejaConnecter();
     } else {
       $this->affichagCompteInexistant();

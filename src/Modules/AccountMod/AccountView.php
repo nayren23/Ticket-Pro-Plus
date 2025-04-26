@@ -113,8 +113,8 @@ class AccountView extends GenericView
                         <div class="conteneurMdp">
                             <!--Premier Mot de Passe- -->
                             <div class="boutonMdp">
-                                <input class="saisieText" id="premierMdp" type="password" placeholder="Mot de passe"
-                                    name="motDePasse" required maxlength="100">
+                                <input class="saisieText" id="firstpassword" type="password" placeholder="Password"
+                                    name="password" required maxlength="100">
                                 <button type="button" class="checkboxMdp"> <img alt="oeil affichage mot de passe" id="oeil"
                                         src="ressource/images/oeilCacherMdp.png"
                                         onclick="basculerAffichageMotDePasse(premierMdp,oeil)"> </button>
@@ -122,8 +122,8 @@ class AccountView extends GenericView
 
                             <!--Deuxième Mot de Passe- -->
                             <div class="boutonMdp">
-                                <input class="saisieText" id="deuxiemeMdp" type="password" placeholder="Confirmation Mdp"
-                                    name="DeuxiemeMotDePasse" required maxlength="100" onKeyUp="checkMdp()">
+                                <input class="saisieText" id="secondpassword" type="password" placeholder="Confirm password"
+                                    name="secondPassword" required maxlength="100" onKeyUp="checkMdp()">
                                 <button type="button" class="checkboxMdp"> <img alt="oeil affichage mot de passe"
                                         id="deuxiemeOeil" src="ressource/images/oeilCacherMdp.png"
                                         onclick="basculerAffichageMotDePasse(deuxiemeMdp,deuxiemeOeil)"> </button>

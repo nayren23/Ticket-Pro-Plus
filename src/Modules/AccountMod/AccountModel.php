@@ -30,11 +30,11 @@ class AccountModel  extends Database
                 // ici on UPDATE les donnee dans la BDD
                 $commande = ' UPDATE utilisateur SET identifiant ="' . $_POST['nouveauidentifiant'] . '" WHERE  identifiant=:identifiant';
                 $statement = $this->getConnection()->prepare($commande);
-                $statement->execute(array(':identifiant' => ($_SESSION["identifiant"])));
+                $statement->execute(array(':identifiant' => ($_SESSION["login"])));
                 $result = $statement->fetch();
 
                 //on oublie pas ici de changer également le $Session 
-                $_SESSION['identifiant'] = $_POST['nouveauidentifiant'];
+                $_SESSION["login"] = $_POST['nouveauidentifiant'];
                 return true;
             }
         } catch (PDOException $e) {
@@ -62,7 +62,7 @@ class AccountModel  extends Database
                 // ici on UPDATE les donnee dans la BDD
                 $commande = ' UPDATE utilisateur SET adresseMail ="' . $_POST['nouveladresseMail'] . '" WHERE  identifiant=:identifiant';
                 $statement = $this->getConnection()->prepare($commande);
-                $statement->execute(array(':identifiant' =>  $_SESSION['identifiant']));
+                $statement->execute(array(':identifiant' =>  $_SESSION["login"]));
                 $result = $statement->fetch();
                 return true;
             }
@@ -77,15 +77,15 @@ class AccountModel  extends Database
         if (!isset($_POST['token']) || !checkToken())
             return 1;
 
-        elseif (strcmp($_POST['motDePasse'], $_POST['DeuxiemeMotDePasse']) != 0) {
+        elseif (strcmp($_POST['password'], $_POST['secondPassword']) != 0) {
             return 2;
         }
         try {
 
             // ici on UPDATE les donnee dans la BDD
-            $sql = 'UPDATE utilisateur SET motDePasse ="' .  password_hash(htmlspecialchars($_POST['motDePasse']), PASSWORD_DEFAULT) . '" WHERE  identifiant=:identifiant';
+            $sql = 'UPDATE utilisateur SET motDePasse ="' .  password_hash(htmlspecialchars($_POST['password']), PASSWORD_DEFAULT) . '" WHERE  identifiant=:identifiant';
             $statement = $this->getConnection()->prepare($sql);
-            $statement->execute(array(':identifiant' =>  $_SESSION['identifiant']));
+            $statement->execute(array(':identifiant' =>  $_SESSION["login"]));
             $result = $statement->fetch();
             return 3;
         } catch (PDOException $e) {
@@ -120,7 +120,7 @@ class AccountModel  extends Database
             // ici on UPDATE les donnee dans la BDD
             $commande = 'UPDATE utilisateur SET cheminImage ="' . $image . '" WHERE  identifiant=:identifiant';
             $statement = $this->getConnection()->prepare($commande);
-            $statement->execute(array(':identifiant' =>  $_SESSION['identifiant']));
+            $statement->execute(array(':identifiant' =>  $_SESSION["login"]));
             $result = $statement->fetch();
             return true;
         } catch (PDOException $e) {
@@ -135,7 +135,7 @@ class AccountModel  extends Database
 
             $sql = 'Select * from utilisateur WHERE identifiant=:identifiant';
             $statement = $this->getConnection()->prepare($sql);
-            $statement->execute(array(':identifiant' => $_SESSION['identifiant']));
+            $statement->execute(array(':identifiant' => $_SESSION["login"]));
             $resultat = $statement->fetch();
             return $resultat;
         } catch (PDOException $e) {

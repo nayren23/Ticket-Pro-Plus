@@ -81,10 +81,10 @@ class UserManagerModel extends AccountModel
             try { //On cherche si l'id existe déjà
                 $sql = 'Select * from utilisateur WHERE (identifiant=:identifiant)';
                 $statement = $this->conn->prepare($sql);
-                $statement->execute(array(':identifiant' => ($_SESSION['identifiant'])));
+                $statement->execute(array(':identifiant' => ($_SESSION["login"])));
                 $result = $statement->fetch();
                 if ($result) { //si l'id est correct alors on verifie le mdp
-                    if (password_verify(htmlspecialchars($_POST['motDePasse']), $result['motDePasse']) && $result['idGroupes'] == 2) {
+                    if (password_verify(htmlspecialchars($_POST['password']), $result['motDePasse']) && $result['idGroupes'] == 2) {
                         return 2; // connexion reussie au site
                     }
                 } else {
@@ -138,7 +138,7 @@ class UserManagerModel extends AccountModel
                         $sql = 'UPDATE utilisateur SET motDePasse= :motDePasse WHERE idUser =:idUser';
                         $statement = $this->conn->prepare($sql);
                         $statement->execute(array(
-                            ':motDePasse' => password_hash(htmlspecialchars($_POST['motDePasse']), PASSWORD_DEFAULT),
+                            ':motDePasse' => password_hash(htmlspecialchars($_POST['password']), PASSWORD_DEFAULT),
                             ':idUser' => htmlspecialchars($_GET['idUser'])
                         )); //vois si pour le mdp on fait htmlspecialchars
                     } else {
@@ -163,7 +163,7 @@ class UserManagerModel extends AccountModel
                                 return 4; //identifiant deja utilisé';
                             } else {
                                 //on stocke à l'avance l'id du compte actuel pour pouvoir mettre à jour le $_SESSION
-                                $îdUseur = $this->recuperationIdUser($_SESSION['identifiant']);
+                                $îdUseur = $this->recuperationIdUser($_SESSION["login"]);
 
                                 $sql = "UPDATE utilisateur SET " . $colonneModifier . " = :donneUseur WHERE idUser =:idUser";
                                 $statement = $this->conn->prepare($sql);
@@ -174,7 +174,7 @@ class UserManagerModel extends AccountModel
 
                                 //on oublie pas ici de changer également le $_SESSION actuel
                                 if (strcmp($colonneModifier, 'identifiant') == 0 && strcmp($_GET['idUser'], $îdUseur['idUser']) == 0) {
-                                    $_SESSION['identifiant'] = $_POST[$clef];
+                                    $_SESSION["login"] = $_POST[$clef];
                                 }
                             }
                         } else {
@@ -194,7 +194,7 @@ class UserManagerModel extends AccountModel
         if (!isset($_POST['token']) || !checkToken())
             return 1;
 
-        elseif (strcmp($_POST['motDePasse'], $_POST['DeuxiemeMotDePasse']) != 0) {
+        elseif (strcmp($_POST['password'], $_POST['secondPassword']) != 0) {
             return 2;
         }
 
@@ -210,7 +210,7 @@ class UserManagerModel extends AccountModel
                 // ici on insere les donnee dans la BDD
                 $sql = 'INSERT INTO utilisateur (adresseMail,identifiant,motDePasse,idGroupes) VALUES(:adresseMail,:identifiant, :motDePasse, :idGroupes)';
                 $statement = $this->conn->prepare($sql);
-                $statement->execute(array(':adresseMail' => htmlspecialchars($_POST['adresseMail']), ':identifiant' => htmlspecialchars($_POST['identifiant']), 'motDePasse' => password_hash(htmlspecialchars($_POST['motDePasse']), PASSWORD_DEFAULT), 'idGroupes' => '2')); //vois si pour le mdp on fait htmlspecialchars
+                $statement->execute(array(':adresseMail' => htmlspecialchars($_POST['adresseMail']), ':identifiant' => htmlspecialchars($_POST['identifiant']), 'motDePasse' => password_hash(htmlspecialchars($_POST['password']), PASSWORD_DEFAULT), 'idGroupes' => '2')); //vois si pour le mdp on fait htmlspecialchars
                 return 4;
             }
         } catch (PDOException $e) {

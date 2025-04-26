@@ -12,15 +12,15 @@ class UserExist extends GenericLoginModel
     {
 
         try { //On cherche si l'id existe déjà
-            if (isset($_SESSION['identifiant'])) {
+            if (isset($_SESSION["login"])) {
 
                 $sql = 'Select * from utilisateur WHERE (identifiant=:identifiant)';
                 $statement = $this->conn->prepare($sql);
-                $statement->execute(array(':identifiant' => htmlspecialchars($_SESSION['identifiant'])));
+                $statement->execute(array(':identifiant' => htmlspecialchars($_SESSION["login"])));
                 $result = $statement->fetch();
                 if (!$result) { //si l'id est correct alors on verifie le mdp
                     $this->deconnexionM();
-                    header('Location: ./index.php?module=connexion&action=connexion&SuppresionCompte=true');
+                    header('Location: ./index.php?module=login&action=connexion&SuppresionCompte=true');
                 }
             }
         } catch (PDOException $e) {

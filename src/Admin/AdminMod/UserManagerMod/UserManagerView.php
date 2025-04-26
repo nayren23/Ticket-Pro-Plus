@@ -170,7 +170,7 @@ class UserManagerView extends GenericLoginView
                                     <span>Pour continuer, veuillez confirmer votre identité 😉</span>
                                 </div>
                                 <div class="boutonMdp">
-                                    <input id="premierMdp" type="password" name="motDePasse" class="form-control"
+                                    <input id="firstpassword" type="password" name="password" class="form-control"
                                         placeholder="Saisissez votre mot de passe" required maxlength="100"
                                         onKeyUp="checkMdp()">
                                     <button type="button" class="checkboxMdp"> <img alt="oeil affichage mot de passe" id="oeil"
@@ -338,8 +338,8 @@ class UserManagerView extends GenericLoginView
                                             <h6 class="mb-0">Mot de Passe</h6>
                                         </div>
                                         <div class="col-sm-9 text-secondary">
-                                            <input type="password" class="form-control" id="motDePasse" name="motDePasse"
-                                                maxlength="100" placeholder="Mot de Passe">
+                                            <input type="password" class="form-control" id="motDePasse" name="password"
+                                                maxlength="100" placeholder="Password">
                                             <button type="button" class="checkboxMdp"> <img alt="oeil affichage mot de passe"
                                                     id="Oeil" src="ressource/images/oeilCacherMdp.png"
                                                     onclick="basculerAffichageMotDePasse(motDePasse,Oeil)"> </button>
@@ -388,7 +388,7 @@ class UserManagerView extends GenericLoginView
                                     <span>Pour continuer, veuillez confirmer votre identité 😉</span>
                                 </div>
                                 <div class="boutonMdp">
-                                    <input id="premierMdp" type="password" name="motDePasse" class="form-control"
+                                    <input id="firstpassword" type="password" name="password" class="form-control"
                                         placeholder="Saisissez votre mot de passe" required maxlength="100"
                                         onKeyUp="checkMdp()">
                                     <button type="button" class="checkboxMdp"> <img alt="oeil affichage mot de passe" id="oeil"
@@ -467,8 +467,8 @@ class UserManagerView extends GenericLoginView
                                 <div class="col-sm-6 mb-3">
                                     <div class="form-group">
                                         <label class="required-field" for="email">Mot de passe</label>
-                                        <input type="password" id="premierMdp" class="form-control" name="motDePasse"
-                                            placeholder="Mot de Passe" required maxlength="100">
+                                        <input type="password" id="firstpassword" class="form-control" name="password"
+                                            placeholder="Password" required maxlength="100">
                                         <button type="button" class="checkboxMdp"> <img alt="oeil affichage mot de passe"
                                                 id="oeil" src="ressource/images/oeilCacherMdp.png"
                                                 onclick="basculerAffichageMotDePasse(premierMdp,oeil)"> </button>
@@ -478,8 +478,8 @@ class UserManagerView extends GenericLoginView
                                 <div class="col-sm-6 mb-3">
                                     <div class="form-group">
                                         <label class="required-field" for="email">Confirmation mot de passe</label>
-                                        <input type="password" id="deuxiemeMdp" class="form-control" name="DeuxiemeMotDePasse"
-                                            placeholder="Confirmation Mdp" required maxlength="100" onKeyUp="checkMdp()">
+                                        <input type="password" id="secondpassword" class="form-control" name="secondPassword"
+                                            placeholder="Confirm password" required maxlength="100" onKeyUp="checkMdp()">
                                         <button type="button" class="checkboxMdp"> <img alt="oeil affichage mot de passe"
                                                 id="deuxiemeOeil" src="ressource/images/oeilCacherMdp.png"
                                                 onclick="basculerAffichageMotDePasse(deuxiemeMdp,deuxiemeOeil)"> </button>
@@ -522,7 +522,7 @@ class UserManagerView extends GenericLoginView
                                     <span>Pour continuer, veuillez confirmer votre identité 😉</span>
                                 </div>
                                 <div class="boutonMdp">
-                                    <input id="premierMdp" type="password" name="motDePasse" class="form-control"
+                                    <input id="firstpassword" type="password" name="password" class="form-control"
                                         placeholder="Saisissez votre mot de passe" required maxlength="100"
                                         onKeyUp="checkMdp()">
                                     <button type="button" class="checkboxMdp"> <img alt="oeil affichage mot de passe" id="oeil"

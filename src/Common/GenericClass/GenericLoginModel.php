@@ -9,19 +9,20 @@ class GenericLoginModel extends Database
     public function verificationConnexion($idGroupe)
     {
         //Verification de si on est deja connecte
-
+        echo 'tets';
         if (!isset($_POST['token']) || !checkToken())
             return 1; // faire une pop up et verification dans le  controlleur
         else {
-
+            echo 'etienne';
             try { //On cherche si l'id existe déjà
-                $sql = 'Select * from utilisateur WHERE (identifiant=:identifiant)';
+                $sql = 'Select * from tp_user WHERE (u_login=:identifiant)';
                 $statement = $this->conn->prepare($sql);
                 $statement->execute(array(':identifiant' => htmlspecialchars($_POST['login'])));
                 $result = $statement->fetch();
                 if ($result) { //si l'id est correct alors on verifie le mdp
-                    if (password_verify(htmlspecialchars($_POST['password']), $result['motDePasse']) && $result['idGroupes'] == $idGroupe) {
-                        $_SESSION['identifiant'] = $result['identifiant'];
+                    if (password_verify(htmlspecialchars($_POST['password']), $result['u_password']) && $result['r_id'] == $idGroupe) {
+                        $_SESSION["login"] = $result['identifiant'];
+                        echo "ici";
                         return true; // connexion reussie au site
                     }
                 } else {
@@ -35,8 +36,8 @@ class GenericLoginModel extends Database
 
     public function deconnexionM()
     {
-        if (isset($_SESSION["identifiant"])) {
-            unset($_SESSION["identifiant"]);
+        if (isset($_SESSION["login"])) {
+            unset($_SESSION["login"]);
             session_destroy();
             return true;
         } else {
@@ -45,12 +46,12 @@ class GenericLoginModel extends Database
     }
 
     // fonction génerique pour récupérer toutes les infos d'un user dans un seul tableau 
-    public function getUsers()
+    public function getUser()
     {
         try {
             $sql = 'Select * from utilisateur WHERE identifiant=:identifiant';
             $statement = $this->conn->prepare($sql);
-            $statement->execute(array(':identifiant' => $_SESSION['identifiant']));
+            $statement->execute(array(':identifiant' => $_SESSION["login"]));
             $resultat = $statement->fetch();
             return $resultat;
         } catch (PDOException $e) {

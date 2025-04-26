@@ -12,7 +12,7 @@ class GenericView
         ob_start();
     }
 
-    public function affichageTampon()
+    public function showTampon()
     {
         return ob_get_clean();
     }

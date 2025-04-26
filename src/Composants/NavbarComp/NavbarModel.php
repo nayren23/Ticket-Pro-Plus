@@ -12,7 +12,7 @@ class NavbarModel extends Database
         try {
             $sql = 'Select * from utilisateur WHERE identifiant=:identifiant';
             $statement = $this->getConnection()->prepare($sql);
-            $statement->execute(array(':identifiant' => $_SESSION['identifiant']));
+            $statement->execute(array(':identifiant' => $_SESSION["login"]));
             $resultat = $statement->fetch();
             return $resultat["cheminImage"];
         } catch (PDOException $e) {

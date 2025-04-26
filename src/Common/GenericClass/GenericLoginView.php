@@ -20,7 +20,7 @@ class GenericLoginView extends GenericView
   //fonction pour l'affichage du toast "pop up" pour afficher un message d'erruer si un compte est Inexsistant '
   public function compteInexsistant()
   {
-    if (isset($_SESSION['identifiant'])) {
+    if (isset($_SESSION["login"])) {
       $this->affichageDejaConnecter();
     } else {
       $this->affichagCompteInexistant();

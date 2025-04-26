@@ -27,7 +27,7 @@ if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
 <body>
   <?php
 
-  if (!isset($_SESSION["identifiant"])) {  //page accessible uniquement si on est connecter
+  if (!isset($_SESSION["login"])) {  //page accessible uniquement si on est connecter
     require_once("./composants/NavbarLoginComp/NavbarLoginComp.php");
     $navbar_Connexion = new NavbarLoginComp();
   } else {

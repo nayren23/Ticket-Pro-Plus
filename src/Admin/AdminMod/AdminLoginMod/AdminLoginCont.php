@@ -31,7 +31,7 @@ class AdminLoginCont extends GenericController
                 if ($this->insereDonneConnexion()) {
                     header('Location: ./index.php?module=gestionUseur&action=gestionUseur&page=1&connexionReussit=true'); //redirection vers la page 
                 } else {
-                    header('Location: ./index.php?module=administration&action=connexion&errorConnexion=true'); //redirection vers la page 
+                    header('Location: ./index.php?module=administration&action=login&errorConnexion=true'); //redirection vers la page 
                 }
                 break;
 

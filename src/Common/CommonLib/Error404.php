@@ -18,7 +18,7 @@ function showError404()
         <span class="four"><span class="screen-reader-text">4</span></span>
     </section>
     <div class="link-container">
-        <a href="index.php?module=connexion&action=connexion" class="more-link">Back to home page</a>
+        <a href="index.php?module=login&action=connexion" class="more-link">Back to home page</a>
     </div>
 <?php
 

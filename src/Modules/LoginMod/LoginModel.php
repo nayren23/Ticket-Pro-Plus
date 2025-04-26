@@ -15,23 +15,24 @@ class LoginModel extends GenericLoginModel
         if (!isset($_POST['token']) || !checkToken())
             return 1;
 
-        elseif (strcmp($_POST['motDePasse'], $_POST['DeuxiemeMotDePasse']) != 0) {
+        elseif (strcmp($_POST['u_password'], $_POST['secondPassword']) != 0) {
             return 2;
         }
 
         try {
             //ici on teste si l'adresse mail est deja utilise
-            $sql = 'Select * from tp_user WHERE adresseMail=:adresseMail or identifiant=:identifiant';
+            $sql = 'Select * from tp_user WHERE u_email=:mail or u_login=:login';
             $statement = $this->conn->prepare($sql);
-            $statement->execute(array(':adresseMail' => htmlspecialchars($_POST['adresseMail']), ':identifiant' => htmlspecialchars($_POST['identifiant'])));
+            $statement->execute(array(':mail' => htmlspecialchars($_POST['mail']), ':login' => htmlspecialchars($_POST['login'])));
             $result = $statement->fetch();
             if ($result) {
                 return 3; //adresseMail deja utilisé';
             } else {
                 // ici on insere les donnee dans la BDD
-                $sql = 'INSERT INTO utilisateur (adresseMail,identifiant,motDePasse) VALUES(:adresseMail,:identifiant, :motDePasse)';
+                $sql = 'INSERT INTO tp_user (u_email,u_login,u_password) VALUES(:mail,:login, :u_password)';
                 $statement = $this->conn->prepare($sql);
-                $statement->execute(array(':adresseMail' => htmlspecialchars($_POST['adresseMail']), ':identifiant' => htmlspecialchars($_POST['identifiant']), 'motDePasse' => password_hash(htmlspecialchars($_POST['motDePasse']), PASSWORD_DEFAULT))); //vois si pour le mdp on fait htmlspecialchars
+                $statement->execute(array(':mail' => htmlspecialchars($_POST['mail']), ':login' => htmlspecialchars($_POST['login']), 'u_password' => password_hash(htmlspecialchars($_POST['u_password']), PASSWORD_DEFAULT))); //vois si pour le mdp on fait htmlspecialchars
+                echo "insertion";
                 return 4;
             }
         } catch (PDOException $e) {

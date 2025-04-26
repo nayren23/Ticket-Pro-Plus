@@ -24,33 +24,29 @@ class LoginCont extends GenericController
         switch ($this->action) {
 
             ////////////////////////////////////////////////// INSCRIPTION ///////////////////////////////////////////////////////
-            case 'inscription':
+            case 'signup':
                 $this->affichageFormulaireInscription();
                 break;
 
-            case 'creationCompte':
+            case 'createAccount':
                 $resultatInsereDonneInscription = $this->insereDonneInscription();
                 break;
 
             ////////////////////////////////////////////////// CONNEXION ///////////////////////////////////////////////////////
-            case 'connexion':
+            case 'login':
                 $this->afficherFormulaireConnexion();
                 break;
 
-            case 'connexionidentifiant':
-                if ($this->insereDonneConnexion()) {
-                    header('Location: ./index.php?module=favoris&location=1'); //redirection vers la page 
-                } else {
-                    header('Location: ./index.php?module=connexion&action=connexion&errorConnexion=true'); //redirection vers la page 
-                }
+            case 'idCheck':
+                $this->insereDonneConnexion();
                 break;
 
             ////////////////////////////////////////////////// DECONNEXION ///////////////////////////////////////////////////////
             case 'deconnexion':
                 if ($this->deconnexion()) {
-                    header('Location: ./index.php?module=connexion&action=connexion&DeconnexionReussite=true');
+                    header('Location: ./index.php?module=login&action=connexion&DeconnexionReussite=true');
                 } else {
-                    header('Location: ./index.php?module=connexion&action=connexion&erroDeconnexion=true');
+                    header('Location: ./index.php?module=login&action=connexion&erroDeconnexion=true');
                 }
                 break;
             default:

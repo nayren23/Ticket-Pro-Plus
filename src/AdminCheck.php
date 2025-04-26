@@ -9,11 +9,11 @@ class AdminCheck extends Database
 
     public function isAdmin()
     {
-        if (isset($_SESSION['identifiant'])) {
+        if (isset($_SESSION["login"])) {
             try {
                 $sql = 'Select * from utilisateur WHERE (identifiant=:identifiant)';
                 $statement = $this->getConnection()->prepare($sql);
-                $statement->execute(array(':identifiant' => $_SESSION['identifiant']));
+                $statement->execute(array(':identifiant' => $_SESSION["login"]));
                 $result = $statement->fetch();
                 if ($result) {
                     if ($result['idGroupes'] == 2) {
