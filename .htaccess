@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /Ticket-Pro-Plus/
+
+    # Rediriger la racine vers le dossier public
+    RewriteRule ^$ public/ [L]
+
+    # Empêcher l'accès direct au dossier public (optionnel, mais recommandé)
+    RewriteRule ^public/(.*)$ - [L,NC]
+
+    # Réécrire toutes les autres requêtes vers public/index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ public/index.php/$1 [L]
+</IfModule>
+
+# Désactiver l'affichage de l'index du répertoire
+Options -Indexes
