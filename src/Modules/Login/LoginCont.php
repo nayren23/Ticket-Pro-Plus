@@ -36,12 +36,14 @@ class LoginCont extends Core\GenericController
 
         if ($user) {
             echo "Connexion Réussie";
-            header('Location: /dashboard');
+            //header('Location: /user');
             exit;
         } else {
             // Afficher un message d'erreur
+            echo "Erreur COnnexion";
+
             $_SESSION['error'] = "Email ou mot de passe incorrect";
-            header('Location: /login');
+            //header('Location: /login');
             exit;
         }
     }
