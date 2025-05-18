@@ -37,6 +37,23 @@ class UserCont extends Core\GenericController
             ];
         }
         header('Location: ?module=user&action=showAddUserForm'); // Redirigez vers le formulaire ou une page d'erreur
+    }
 
+    public function manageUser()
+    {
+        $users = $this->model->getAllUserManage();
+        $this->view->manageUser($users);
+    }
+
+    public function deleteUser()
+    {
+        $userId = $_POST['id'];
+        if ($this->model->deleteUser($userId)) {
+            // La suppression a réussi
+            echo json_encode(['success' => true]);
+        } else {
+            // La suppression a échoué (l'utilisateur n'existe pas, erreur de base de données, etc.)
+            echo json_encode(['success' => false, 'error' => 'Failed to delete user.']);
+        }
     }
 }

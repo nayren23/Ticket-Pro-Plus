@@ -88,6 +88,21 @@ class UserModel extends Core\GenericModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getAllUserManage()
+    {
+        $stmt = $this->conn->prepare("Select u_id, u_login, u_firstname, u_lastname, u_email, u_profile_picture, u_email_verified, u_status, r_name from tp_user u join tp_role r on u.r_id = r.r_id; ");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteUser(int $userId): bool
+    {
+        $sql = "DELETE FROM tp_user WHERE u_id = :user_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['user_id' => $userId]);
+        return $stmt->execute();
+    }
+
     public function sanitize($data)
     {
         return htmlspecialchars(strip_tags(trim($data)));
