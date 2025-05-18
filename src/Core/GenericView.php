@@ -34,7 +34,7 @@ class GenericView
 ?>
         <div id="<?php echo $type ?>"
             class="fixed flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shadow-sm top-5 right-5 dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800"
-            role="alert">
+            role="alert" style="z-index: 9999;">
             <div
                 class="inline-flex items-center justify-center shrink-0 w-8 h-8 <?php echo ($type === ToastType::SUCCESS->value ? 'text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-200' : ($type === ToastType::ERROR->value ? 'text-red-500 bg-red-100 dark:bg-red-800 dark:text-red-200' : ($type === ToastType::WARNING->value ? 'text-yellow-500 bg-yellow-100 dark:bg-yellow-800 dark:text-yellow-200' : 'text-blue-500 bg-blue-100 dark:bg-blue-800 dark:text-blue-200'))) ?> rounded-lg">
                 <?php if ($type === ToastType::SUCCESS->value): ?>

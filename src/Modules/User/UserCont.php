@@ -17,7 +17,7 @@ class UserCont extends Core\GenericController
 
     public function showAddUserForm()
     {
-        $this->view->addUserForm();
+        $this->view->showUserForm();
     }
 
     public function addUser()
@@ -56,5 +56,61 @@ class UserCont extends Core\GenericController
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
+    }
+
+    public function editUser()
+    {
+        if (isset($_GET['id'])) {
+            $userId = $_GET['id'];
+
+            $user = $this->model->getUserById($userId); // Récupérez les informations de l'utilisateur
+
+            if ($user) {
+                $this->view->showUserForm($user); // Passez les données à la vue
+            } else {
+                // Gérez le cas où l'utilisateur n'existe pas (redirigez, affichez un message, etc.)
+                echo "User not found.";
+            }
+        } else {
+            // Gérez le cas où l'ID n'est pas fourni
+            echo "User ID not provided.";
+        }
+    }
+
+    public function updateUser()
+    {
+        // Récupérez les données du formulaire d'édition (y compris l'ID) via $_POST
+        $userId = $_POST['id'];
+        $login = $_POST['login'];
+        $firstname = $_POST['firstname'];
+        $lastname = $_POST['lastname'];
+        $email = $_POST['email'];
+        $phone = $_POST['phone'];
+        $description = $_POST['description'];
+        $role = $_POST['role'];
+        $gender = $_POST['gender'];
+        $picture = $_POST['file_input'];
+
+
+        // Validez les données si nécessaire
+
+        $userModel = new UserModel();
+        $result = $userModel->updateUser($userId, $login, $firstname, $lastname, $email, $phone, $description, $role, $gender);
+
+        if ($result) {
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::SUCCESS->value,
+                'message' => 'User updated successfully'
+            ];
+            // Redirigez avec un message de succès
+        } else {
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::ERROR->value,
+                'message' => "Failed to update user"
+            ];
+            // Redirigez avec un message d'erreur
+        }
+
+        header('Location: index.php?module=user&action=manageUser');
     }
 }

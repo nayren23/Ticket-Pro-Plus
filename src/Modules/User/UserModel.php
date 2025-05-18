@@ -15,8 +15,6 @@ class UserModel extends Core\GenericModel
             $firstname = $this->sanitize($_POST['firstname']);
             $lastname = $this->sanitize($_POST['lastname']);
             $email = $this->sanitize($_POST['email']);
-            $password1 = $_POST['firstpassword'];
-            $password2 = $_POST['secondpassword'];
             $phone = isset($_POST['phone']) ? $this->sanitize($_POST['phone']) : null;
             $gender = isset($_POST['gender']) ? (int)$_POST['gender'] : 2;
             $description = isset($_POST['message']) ? $this->sanitize($_POST['message']) : null;
@@ -30,15 +28,11 @@ class UserModel extends Core\GenericModel
                 throw new \Exception('Invalid email.');
             }
 
-            if ($password1 !== $password2) {
-                throw new \Exception('Passwords do not match.');
-            }
-
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 throw new \Exception('Invalid email format.');
             }
 
-            $hashedPassword = password_hash($password1, PASSWORD_DEFAULT);
+            //$hashedPassword = password_hash($password1, PASSWORD_DEFAULT);
             $now = date('Y-m-d H:i:s');
 
             // Upload profile picture (simplifié, sans vérif format/taille)
@@ -53,8 +47,8 @@ class UserModel extends Core\GenericModel
                 }
             }
 
-            $sql = "INSERT INTO tp_user (u_login, u_firstname, u_lastname, u_email, u_password, u_timestamp_creation, u_timestamp_modification, u_profile_picture, u_gender, u_phone_number, u_status, u_description, r_id) 
-                VALUES (:login, :firstname, :lastname, :email, :password, :created, :modified, :pfp, :gender, :phone, 1, :description, :role_id)";
+            $sql = "INSERT INTO tp_user (u_login, u_firstname, u_lastname, u_email, u_timestamp_creation, u_timestamp_modification, u_profile_picture, u_gender, u_phone_number, u_status, u_description, r_id) 
+                VALUES (:login, :firstname, :lastname, :email, :created, :modified, :pfp, :gender, :phone, 1, :description, :role_id)";
             $statement = $this->conn->prepare($sql);
 
             $statement->execute([
@@ -62,7 +56,6 @@ class UserModel extends Core\GenericModel
                 ':firstname' => $firstname,
                 ':lastname' => $lastname,
                 ':email' => $email,
-                ':password' => $hashedPassword,
                 ':created' => $now,
                 ':modified' => $now,
                 ':pfp' => $profilePicturePath,
@@ -76,21 +69,24 @@ class UserModel extends Core\GenericModel
 
     public function checkLogin($login)
     {
-        $stmt = $this->conn->prepare("Select u_login from tp_user WHERE u_login =:u_login");
+        $sql = "SELECT u_login from tp_user WHERE u_login =:u_login";
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute(['u_login' => htmlspecialchars($login)]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function checkEmail($email)
     {
-        $stmt = $this->conn->prepare("Select u_email from tp_user WHERE u_email =:u_email");
+        $sql = "SELECT u_email from tp_user WHERE u_email =:u_email";
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute(['u_email' => htmlspecialchars($email)]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getAllUserManage()
     {
-        $stmt = $this->conn->prepare("Select u_id, u_login, u_firstname, u_lastname, u_email, u_profile_picture, u_email_verified, u_status, r_name from tp_user u join tp_role r on u.r_id = r.r_id; ");
+        $sql = "SELECT u_id, u_login, u_firstname, u_lastname, u_email, u_profile_picture, u_email_verified, u_status, r_name from tp_user u join tp_role r on u.r_id = r.r_id; ";
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -105,6 +101,46 @@ class UserModel extends Core\GenericModel
         $sql = "DELETE FROM tp_user WHERE u_id = :user_id";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute(['user_id' => $userId]);
+    }
+
+    public function getUserById(int $userId): ?array
+    {
+        $sql = "SELECT u_id, u_login, u_firstname, u_lastname, u_email, u_phone_number, u_gender, u_description, r_id
+                FROM tp_user
+                WHERE u_id = :user_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':user_id' => $userId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    #TODO photo
+    public function updateUser(int $userId, string $login, string $firstname, string $lastname, string $email, ?string $phone, ?string $description, int $roleId, int $gender): bool
+    {
+        $now = date('Y-m-d H:i:s');
+        $sql = "UPDATE tp_user
+                SET u_login = :login,
+                    u_firstname = :firstname,
+                    u_lastname = :lastname,
+                    u_email = :email,
+                    u_phone_number = :phone,
+                    u_gender = :gender,
+                    u_description = :description,
+                    r_id = :role_id,
+                    u_timestamp_modification = :modified
+                WHERE u_id = :user_id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            ':user_id' => $userId,
+            ':login' => $login,
+            ':firstname' => $firstname,
+            ':lastname' => $lastname,
+            ':email' => $email,
+            ':phone' => $phone,
+            ':gender' => $gender,
+            ':description' => $description,
+            ':role_id' => $roleId,
+            ':modified' => $now
+        ]);
     }
 
     public function sanitize($data)

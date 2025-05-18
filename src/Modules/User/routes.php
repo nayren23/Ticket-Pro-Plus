@@ -24,6 +24,15 @@ switch ($action) {
         $controller->deleteUser($userIdToDelete);
         break;
 
+    case 'showEditUserForm':
+        $controller->editUser();
+        break;
+
+    case 'updateUser':
+        $controller->updateUser();
+        break;
+
+
     default:
         http_response_code(404);
         echo "404 - Page not found module User";
