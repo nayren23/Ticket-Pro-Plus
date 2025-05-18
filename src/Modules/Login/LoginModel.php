@@ -15,9 +15,11 @@ class LoginModel extends Core\GenericModel
             $user = $this->getUserByLogin($_POST['login']);
             if ($user) {
                 if ($this->verifyPassword($_POST['password'], $user['u_password'])) {
-                    $_SESSION['u_login'] = $user['u_login'];
-                    $_SESSION['r_id'] = $user['r_id'];
-                    $_SESSION['u_email'] = $user['u_email'];
+                    $_SESSION['user']['u_login'] = $user['u_login'];
+                    $_SESSION['user']['r_id'] = $user['r_id'];
+                    $_SESSION['user']['u_email'] = $user['u_email'];
+                    $_SESSION['user']['u_id'] = $user['u_id'];
+                    var_dump($_SESSION['user']);
                     return true;
                 }
             } else {

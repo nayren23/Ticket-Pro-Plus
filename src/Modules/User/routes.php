@@ -20,8 +20,6 @@ switch ($action) {
         break;
 
     case 'deleteUser':
-        //echo "supprezsion oui";
-        //exit;
         $userIdToDelete = $_POST['id'];
         $controller->deleteUser($userIdToDelete);
         break;

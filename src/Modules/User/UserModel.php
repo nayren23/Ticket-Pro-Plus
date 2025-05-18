@@ -97,10 +97,14 @@ class UserModel extends Core\GenericModel
 
     public function deleteUser(int $userId): bool
     {
+        $currentUserId = $_SESSION['user']['u_id'] ?? null;
+        echo "userId : " . $userId . " " . "currentUserId: " . $currentUserId;
+        if ($userId == $currentUserId) {
+            throw new \Exception('You cannot delete your own account!');
+        }
         $sql = "DELETE FROM tp_user WHERE u_id = :user_id";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['user_id' => $userId]);
-        return $stmt->execute();
+        return $stmt->execute(['user_id' => $userId]);
     }
 
     public function sanitize($data)

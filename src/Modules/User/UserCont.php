@@ -27,12 +27,12 @@ class UserCont extends Core\GenericController
             // En cas de succès, stocker un message en session et rediriger
             $_SESSION['toast'] = [
                 'type' => Core\ToastType::SUCCESS->value,
-                'message' => 'User successfully created!'
+                'message' => 'User successfully created !'
             ];
         } catch (\Exception $e) {
             // En cas d'erreur, stocker le message en session et rediriger
             $_SESSION['toast'] = [
-                'type' => Core\ToastType::error->value,
+                'type' => Core\ToastType::ERROR->value,
                 'message' => $e->getMessage()
             ];
         }
@@ -47,13 +47,14 @@ class UserCont extends Core\GenericController
 
     public function deleteUser()
     {
-        $userId = $_POST['id'];
-        if ($this->model->deleteUser($userId)) {
-            // La suppression a réussi
-            echo json_encode(['success' => true]);
-        } else {
-            // La suppression a échoué (l'utilisateur n'existe pas, erreur de base de données, etc.)
-            echo json_encode(['success' => false, 'error' => 'Failed to delete user.']);
+        try {
+            $userId = $_POST['id'];
+            $this->model->deleteUser($userId);
+            http_response_code(200); // OK
+        } catch (\Exception $e) {
+            http_response_code(500); // Internal Server Error
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 }

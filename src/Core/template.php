@@ -17,6 +17,9 @@ use TicketProPlus\App\Core;
     <!-- Jquery -->
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
+    <!-- Sweetalert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- CSS only -->
     <link href="./public/assets/css/main.css" rel="stylesheet" />
     <link rel=" icon" href="ressource/images/TabA2Z.png" type="image/x-icon">
@@ -30,6 +33,7 @@ use TicketProPlus\App\Core;
     $router = new Core\Router();
     ?>
     <script src="./src/Modules/User/UserScript.js"></script>
+    <script src="./src/Core/utils.js"></script>
 </body>
 
 </html>
