@@ -231,12 +231,12 @@ class UserModel extends Core\GenericModel
 
         // Validation côté serveur (important !)
         if (empty($password) || empty($confirmPassword)) {
-            $_SESSION['toast'] = ['type' => 'error', 'message' => 'Veuillez remplir tous les champs de mot de passe.'];
+            $_SESSION['toast'] = ['type' => Core\ToastType::ERROR->value, 'message' => 'Please complete all password fields.'];
             return;
         }
 
         if ($password !== $confirmPassword) {
-            $_SESSION['toast'] = ['type' => 'error', 'message' => 'Les mots de passe ne correspondent pas.'];
+            $_SESSION['toast'] = ['type' => Core\ToastType::ERROR->value, 'message' => 'The passwords do not match.'];
             return;
         }
 

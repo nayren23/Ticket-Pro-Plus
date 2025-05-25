@@ -30,23 +30,23 @@ passwordInput.addEventListener('input', () => {
 
     if (score === 0) {
         passwordStrengthBar.className = 'bg-red-500 h-2.5 rounded-full';
-        passwordStrengthText.textContent = 'Très faible';
+        passwordStrengthText.textContent = 'Very weak';
         passwordStrengthText.className = 'mt-2 text-sm text-red-500 dark:text-red-400';
     } else if (score === 1) {
         passwordStrengthBar.className = 'bg-orange-500 h-2.5 rounded-full';
-        passwordStrengthText.textContent = 'Faible';
+        passwordStrengthText.textContent = 'Weak';
         passwordStrengthText.className = 'mt-2 text-sm text-orange-500 dark:text-orange-400';
     } else if (score === 2) {
         passwordStrengthBar.className = 'bg-yellow-500 h-2.5 rounded-full';
-        passwordStrengthText.textContent = 'Moyen';
+        passwordStrengthText.textContent = 'Medium';
         passwordStrengthText.className = 'mt-2 text-sm text-yellow-500 dark:text-yellow-400';
     } else if (score === 3) {
         passwordStrengthBar.className = 'bg-lime-500 h-2.5 rounded-full';
-        passwordStrengthText.textContent = 'Fort';
+        passwordStrengthText.textContent = 'Strong';
         passwordStrengthText.className = 'mt-2 text-sm text-lime-500 dark:text-lime-400';
     } else if (score === 4) {
         passwordStrengthBar.className = 'bg-green-500 h-2.5 rounded-full';
-        passwordStrengthText.textContent = 'Très fort';
+        passwordStrengthText.textContent = 'Very strong';
         passwordStrengthText.className = 'mt-2 text-sm text-green-500 dark:text-green-400';
     }
 });
