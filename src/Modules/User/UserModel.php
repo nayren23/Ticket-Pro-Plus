@@ -199,10 +199,14 @@ class UserModel extends Core\GenericModel
 
     public function getUsersWithPagination(int $offset, int $limit): array
     {
-        $sql = "SELECT u.*, r.r_name
-            FROM tp_user u
-            LEFT JOIN tp_role r ON u.r_id = r.r_id
-            LIMIT :limit OFFSET :offset";
+        $sql = "SELECT u.*, r.r_name,
+                       CASE
+                           WHEN u.u_password IS NOT NULL THEN 1
+                           ELSE 0
+                       END AS password_set
+                FROM tp_user u
+                LEFT JOIN tp_role r ON u.r_id = r.r_id
+                LIMIT :limit OFFSET :offset";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
