@@ -113,9 +113,9 @@ class UserView extends Core\GenericView
                     </div>
 
                     <div class="relative z-0 w-full mb-5 group">
-                        <label for="message" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Your
+                        <label for="description" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Your
                             description</label>
-                        <textarea id="message" name="description" rows="4"
+                        <textarea id="description" name="description" rows="4"
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Leave a description of you..."><?= $descriptionValue ?></textarea>
                     </div>
@@ -188,7 +188,7 @@ class UserView extends Core\GenericView
                             </td>
                             <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                 <img class="w-10 h-10 rounded-full" src="public/<?= $user["u_profile_picture"] ?>"
-                                    alt="Jese image">
+                                    alt="Image">
                                 <div class="ps-3">
                                     <div class="text-base font-semibold">
                                         <?= $user["u_firstname"] . " " . $user["u_lastname"]  ?>
@@ -204,7 +204,7 @@ class UserView extends Core\GenericView
                                     <div
                                         class="h-2.5 w-2.5 rounded-full <?= $user["u_email_verified"] === 1 ? "bg-green-500" : "bg-red-500"  ?> me-2">
                                     </div>
-                                    <?= $user["u_email_verified"] === 1 ? "Yes" : "No"  ?>
+                                    <?= $user["u_email_verified"] === 1 ? "Yes" : "No" ?>
                                 </div>
                             </td>
 
@@ -299,6 +299,7 @@ class UserView extends Core\GenericView
                             <i id="eyeIcon" class="fa fa-eye"></i>
                         </button>
                     </div>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Password must be at least <span class="font-semibold">Strong</span>.</p>
                     <div id="passwordStrengthMeter" class="bg-gray-200 rounded-full h-2.5 mt-2 dark:bg-gray-700">
                         <div id="passwordStrengthBar" class="bg-red-500 h-2.5 rounded-full" style="width: 0%"></div>
                     </div>

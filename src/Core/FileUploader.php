@@ -67,7 +67,7 @@ class FileUploader
 
     public function deleteFile(string $filePath): void
     {
-        if (file_exists($filePath)) {
+        if (file_exists($filePath) && !str_contains($filePath, 'user')) {
             unlink($filePath);
         }
     }

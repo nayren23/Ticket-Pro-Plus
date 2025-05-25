@@ -12,14 +12,13 @@ class UserModel extends Core\GenericModel
     public function addUser()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
             $login = $this->sanitize($_POST['login']);
             $firstname = $this->sanitize($_POST['firstname']);
             $lastname = $this->sanitize($_POST['lastname']);
             $email = $this->sanitize($_POST['email']);
             $phone = isset($_POST['phone']) ? $this->sanitize($_POST['phone']) : null;
             $gender = isset($_POST['gender']) ? (int)$_POST['gender'] : 2;
-            $description = isset($_POST['message']) ? $this->sanitize($_POST['message']) : null;
+            $description = isset($_POST['description']) ? $this->sanitize($_POST['description']) : null;
             $role_id = isset($_POST['role']) ? (int)$_POST['role'] : 1;
 
             if ($this->checkLogin($login)) {
