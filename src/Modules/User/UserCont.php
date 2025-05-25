@@ -144,8 +144,6 @@ class UserCont extends Core\GenericController
             if ($userId) {
                 if ($this->model->updatePassword($userId)) {
                     $_SESSION['toast'] = ['type' => Core\ToastType::SUCCESS->value, 'message' => 'Password successfully updated.'];
-                } else {
-                    $_SESSION['toast'] = ['type' => Core\ToastType::ERROR->value, 'message' => 'Error updating password.'];
                 }
             } else {
                 // Gérez le cas où l'utilisateur n'existe pas (redirigez, affichez un message, etc.)

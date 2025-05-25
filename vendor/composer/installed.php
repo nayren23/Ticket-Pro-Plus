@@ -1,15 +1,24 @@
 <?php return array(
     'root' => array(
         'name' => 'ticket-pro-plus/app',
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-        'reference' => '0a8a1b4f022786931e482e8d9b73e97287e083ff',
+        'pretty_version' => 'dev-develop',
+        'version' => 'dev-develop',
+        'reference' => '4ad4672c21e1f81a7429a9eaebac40ebb0dfba0b',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
+        'bjeavons/zxcvbn-php' => array(
+            'pretty_version' => '1.4.2',
+            'version' => '1.4.2.0',
+            'reference' => '426f664501a0747beb8f3ee17ac30c7dd6327ffa',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../bjeavons/zxcvbn-php',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'graham-campbell/result-type' => array(
             'pretty_version' => 'v1.1.3',
             'version' => '1.1.3.0',
@@ -56,9 +65,9 @@
             'dev_requirement' => false,
         ),
         'ticket-pro-plus/app' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => '0a8a1b4f022786931e482e8d9b73e97287e083ff',
+            'pretty_version' => 'dev-develop',
+            'version' => 'dev-develop',
+            'reference' => '4ad4672c21e1f81a7429a9eaebac40ebb0dfba0b',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

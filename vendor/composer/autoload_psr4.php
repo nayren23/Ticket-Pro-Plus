@@ -6,6 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'ZxcvbnPhp\\' => array($vendorDir . '/bjeavons/zxcvbn-php/src'),
     'TicketProPlus\\App\\Modules\\' => array($baseDir . '/src/Modules'),
     'TicketProPlus\\App\\Core\\' => array($baseDir . '/src/Core'),
     'TicketProPlus\\App\\Config\\' => array($baseDir . '/src/Config'),

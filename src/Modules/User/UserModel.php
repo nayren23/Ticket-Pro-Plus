@@ -2,8 +2,10 @@
 
 namespace TicketProPlus\App\Modules\User;
 
+require __DIR__ . '/../../../vendor/autoload.php'; // Chemin relatif vers l'autoloader de Composer
 
 use PDO, PDOException, TicketProPlus\App\Core;
+use ZxcvbnPhp\Zxcvbn;
 
 class UserModel extends Core\GenericModel
 {
@@ -240,14 +242,15 @@ class UserModel extends Core\GenericModel
             return;
         }
 
-        // Validation de la force du mot de passe côté serveur (optionnel mais recommandé)
-        /*  $zxcvbnResult = \zxcvbn($password);
-        if ($zxcvbnResult['score'] < 3) { // Définir un seuil de force minimum
-            $_SESSION['toast'] = ['type' => 'warning', 'message' => 'Le mot de passe est considéré comme faible. Veuillez en choisir un plus fort.'];
-            return;
-        }*/
+        // Validation de la force du mot de passe côté serveur
+        $strengthMeter = new Zxcvbn();
+        $weak = $strengthMeter->passwordStrength($password);
+        if ($weak["score"] < 3) {
+            $_SESSION['toast'] = ['type' => Core\ToastType::WARNING->value, 'message' => 'The password is considered weak. Please choose a stronger one.'];
+            return false;
+        }
 
-        // Hasher le mot de passe avant de l'enregistrer
+        // Hasher mot de passe avant de enregistrement
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $sql = "UPDATE tp_user SET u_password = :u_password WHERE u_id = :user_id";
         $stmt = $this->conn->prepare($sql);
