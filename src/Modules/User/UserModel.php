@@ -36,20 +36,8 @@ class UserModel extends Core\GenericModel
 
             $now = date('Y-m-d H:i:s');
 
-            // Upload profile picture (simplifié, sans vérif format/taille)
-            $profilePicturePath = null;
-            if (isset($_FILES['pfp']) && $_FILES['pfp']['error'] === 0) {
-                $targetDir = 'uploads/';
-                if (!is_dir($targetDir)) mkdir($targetDir);
-                $filename = basename($_FILES['pfp']['name']);
-                $targetFile = $targetDir . uniqid() . '_' . $filename;
-                if (move_uploaded_file($_FILES['pfp']['tmp_name'], $targetFile)) {
-                    $profilePicturePath = $targetFile;
-                }
-            }
-
-            $sql = "INSERT INTO tp_user (u_login, u_firstname, u_lastname, u_email, u_timestamp_creation, u_timestamp_modification, u_profile_picture, u_gender, u_phone_number, u_status, u_description, r_id) 
-                VALUES (:login, :firstname, :lastname, :email, :created, :modified, :pfp, :gender, :phone, 1, :description, :role_id)";
+            $sql = "INSERT INTO tp_user (u_login, u_firstname, u_lastname, u_email, u_timestamp_creation, u_timestamp_modification, u_gender, u_phone_number, u_status, u_description, r_id) 
+                VALUES (:login, :firstname, :lastname, :email, :created, :modified, :gender, :phone, 1, :description, :role_id)";
             $statement = $this->conn->prepare($sql);
 
             $statement->execute([
@@ -59,12 +47,16 @@ class UserModel extends Core\GenericModel
                 ':email' => $email,
                 ':created' => $now,
                 ':modified' => $now,
-                ':pfp' => $profilePicturePath,
                 ':gender' => $gender,
                 ':phone' => $phone,
                 ':description' => $description,
                 ':role_id' => $role_id
             ]);
+
+            $userId = $this->conn->lastInsertId();
+            if ((!empty($_FILES['file_input']['name']))) {
+                $this->uploadProfilePicture($userId);
+            }
         }
     }
 
@@ -150,13 +142,12 @@ class UserModel extends Core\GenericModel
 
     public function updateUser(int $userId, string $login, string $firstname, string $lastname, string $email, ?string $phone, ?string $description, int $roleId, int $gender): bool
     {
-        // Vérifier si le nouvel email est unique pour cet utilisateur
         if (!$this->isEmailUniqueForUpdate($userId, $email)) {
             $_SESSION['toast'] = [
                 'type' => Core\ToastType::ERROR->value,
                 'message' => 'This email address is already in use by another user.'
             ];
-            return false; // Indiquer que la mise à jour a échoué à cause de l'email
+            return false;
         }
 
         if ((!empty($_FILES['file_input']['name']))) {
@@ -190,7 +181,6 @@ class UserModel extends Core\GenericModel
         ]);
 
         if (!$result) {
-            // Gérer les autres erreurs de mise à jour (si nécessaire)
             $_SESSION['toast'] = [
                 'type' => Core\ToastType::ERROR->value,
                 'message' => 'Error updating user information.'
@@ -250,7 +240,7 @@ class UserModel extends Core\GenericModel
             return false;
         }
 
-        // Hasher mot de passe avant de enregistrement
+        // Hashe mot de passe avant enregistrement
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $sql = "UPDATE tp_user SET u_password = :u_password WHERE u_id = :user_id";
         $stmt = $this->conn->prepare($sql);

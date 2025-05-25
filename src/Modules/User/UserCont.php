@@ -4,8 +4,6 @@ namespace TicketProPlus\App\Modules\User;
 
 use TicketProPlus\App\Core;
 
-
-
 class UserCont extends Core\GenericController
 {
 
@@ -24,37 +22,30 @@ class UserCont extends Core\GenericController
     {
         try {
             $this->model->addUser();
-            // En cas de succès, stocker un message en session et rediriger
             $_SESSION['toast'] = [
                 'type' => Core\ToastType::SUCCESS->value,
                 'message' => 'User successfully created !'
             ];
         } catch (\Exception $e) {
-            // En cas d'erreur, stocker le message en session et rediriger
             $_SESSION['toast'] = [
                 'type' => Core\ToastType::ERROR->value,
                 'message' => $e->getMessage()
             ];
         }
-        header('Location: ?module=user&action=showAddUserForm'); // Redirigez vers le formulaire ou une page d'erreur
+        header('Location: ?module=user&action=showAddUserForm');
     }
 
 
     public function manageUser()
     {
-        $totalUsers = $this->model->getTotalUsers(); // Fonction dans votre modèle
+        $totalUsers = $this->model->getTotalUsers();
         $usersPerPage = 10;
         $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $totalPages = ceil($totalUsers / $usersPerPage);
         $offset = ($currentPage - 1) * $usersPerPage;
 
-        $users = $this->model->getUsersWithPagination($offset, $usersPerPage); // Fonction dans votre modèle
-
-        // Passez $users, $currentPage et $totalPages à votre vue (manageUser)
+        $users = $this->model->getUsersWithPagination($offset, $usersPerPage);
         $this->view->manageUser($users, $currentPage, $totalPages, $totalUsers);
-
-        $users = $this->model->getAllUserManage();
-        //$this->view->manageUser($users);
     }
 
     public function deleteUser()
@@ -62,9 +53,9 @@ class UserCont extends Core\GenericController
         try {
             $userId = $_POST['id'];
             $this->model->deleteUser($userId);
-            http_response_code(200); // OK
+            http_response_code(200);
         } catch (\Exception $e) {
-            http_response_code(500); // Internal Server Error
+            http_response_code(500);
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
@@ -75,23 +66,20 @@ class UserCont extends Core\GenericController
         if (isset($_GET['id'])) {
             $userId = $_GET['id'];
 
-            $user = $this->model->getUserById($userId); // Récupérez les informations de l'utilisateur
+            $user = $this->model->getUserById($userId);
 
             if ($user) {
-                $this->view->showUserForm($user); // Passez les données à la vue
+                $this->view->showUserForm($user);
             } else {
-                // Gérez le cas où l'utilisateur n'existe pas (redirigez, affichez un message, etc.)
                 echo "User not found.";
             }
         } else {
-            // Gérez le cas où l'ID n'est pas fourni
             echo "User ID not provided.";
         }
     }
 
     public function updateUser()
     {
-        // Récupérez les données du formulaire d'édition (y compris l'ID) via $_POST
         $userId = $_POST['id'];
         $login = $_POST['login'];
         $firstname = $_POST['firstname'];
@@ -102,8 +90,6 @@ class UserCont extends Core\GenericController
         $role = $_POST['role'];
         $gender = $_POST['gender'];
 
-        // Validez les données si nécessaire
-
         $result = $this->model->updateUser($userId, $login, $firstname, $lastname, $email, $phone, $description, $role, $gender);
 
         if ($result) {
@@ -111,7 +97,6 @@ class UserCont extends Core\GenericController
                 'type' => Core\ToastType::SUCCESS->value,
                 'message' => 'User updated successfully'
             ];
-            // Redirigez avec un message de succès
         }
 
         header('Location: index.php?module=user&action=manageUser');
@@ -126,11 +111,9 @@ class UserCont extends Core\GenericController
             if ($userId) {
                 $this->view->updatePasswordForm($userId);
             } else {
-                // Gérez le cas où l'utilisateur n'existe pas (redirigez, affichez un message, etc.)
                 echo "User not found.";
             }
         } else {
-            // Gérez le cas où l'ID n'est pas fourni
             echo "User ID not provided.";
         }
     }
@@ -146,11 +129,9 @@ class UserCont extends Core\GenericController
                     $_SESSION['toast'] = ['type' => Core\ToastType::SUCCESS->value, 'message' => 'Password successfully updated.'];
                 }
             } else {
-                // Gérez le cas où l'utilisateur n'existe pas (redirigez, affichez un message, etc.)
                 echo "User not found.";
             }
         } else {
-            // Gérez le cas où l'ID n'est pas fourni
             echo "User ID not provided.";
         }
         header('Location: index.php?module=user&action=manageUser');
