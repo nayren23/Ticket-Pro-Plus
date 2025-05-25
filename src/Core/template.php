@@ -23,7 +23,7 @@ use TicketProPlus\App\Core;
 
     <!-- CSS only -->
     <link href="./public/assets/css/main.css" rel="stylesheet" />
-    <link rel=" icon" href="ressource/images/TabA2Z.png" type="image/x-icon">
+    <link rel=" icon" href="./public/assets/images/Ticket_Pro_favicon.png" type="image/x-icon">
 
     <!-- font-awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
