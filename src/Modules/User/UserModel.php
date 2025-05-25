@@ -113,9 +113,38 @@ class UserModel extends Core\GenericModel
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
-    #TODO photo
+    private function uploadProfilePicture(int $userId)
+    {
+        $uploader = new Core\FileUploader('assets/images/uploads/profile_pictures');
+
+        $sql = "SELECT u_profile_picture
+                FROM tp_user
+                WHERE u_id = :user_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':user_id' => $userId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result && $result['u_profile_picture']) {
+            $oldPicturePath = $result['u_profile_picture'];
+            $uploader->deleteFile($oldPicturePath);
+        }
+
+        $profilePicturePath = $uploader->upload($_FILES['file_input'], $_SESSION['user']['u_id'] ?? uniqid('user_'));
+        $sql = "UPDATE tp_user SET u_profile_picture = :picture WHERE u_id = :user_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':picture' => $profilePicturePath
+        ]);
+    }
+
+
     public function updateUser(int $userId, string $login, string $firstname, string $lastname, string $email, ?string $phone, ?string $description, int $roleId, int $gender): bool
     {
+        if ((!empty($_FILES['file_input']['name']))) {
+            $this->uploadProfilePicture($userId);
+        }
+
         $now = date('Y-m-d H:i:s');
         $sql = "UPDATE tp_user
                 SET u_login = :login,
@@ -139,7 +168,7 @@ class UserModel extends Core\GenericModel
             ':gender' => $gender,
             ':description' => $description,
             ':role_id' => $roleId,
-            ':modified' => $now
+            ':modified' => $now,
         ]);
     }
 

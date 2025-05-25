@@ -89,13 +89,10 @@ class UserCont extends Core\GenericController
         $description = $_POST['description'];
         $role = $_POST['role'];
         $gender = $_POST['gender'];
-        $picture = $_POST['file_input'];
-
 
         // Validez les données si nécessaire
 
-        $userModel = new UserModel();
-        $result = $userModel->updateUser($userId, $login, $firstname, $lastname, $email, $phone, $description, $role, $gender);
+        $result = $this->model->updateUser($userId, $login, $firstname, $lastname, $email, $phone, $description, $role, $gender);
 
         if ($result) {
             $_SESSION['toast'] = [

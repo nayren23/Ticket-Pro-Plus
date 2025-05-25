@@ -30,7 +30,7 @@ class UserView extends Core\GenericView
         <title> <?= $title ?> </title>
         <div class="mt-6">
             <div class="contenir">
-                <form class="max-w-md mx-auto" action="<?= $action ?>" method="POST">
+                <form class="max-w-md mx-auto" action="<?= $action ?>" method="POST" enctype="multipart/form-data">
                     <h2 class="text-4xl font-extrabold dark:text-white mb-6"><?= $heading ?></h2>
 
                     <?php if ($userToEdit !== null): ?>
@@ -74,7 +74,7 @@ class UserView extends Core\GenericView
                     </div>
 
                     <div class="relative z-0 w-full mb-5 group">
-                        <input type="tel" pattern="[0-9]{10}" name="phone" id="phone"
+                        <input type="tel" pattern="[0-9]{10}" name="phone" id="phone" maxlength="10"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                             placeholder=" " value="<?= $phoneValue ?>" required />
                         <label for="phone"
@@ -95,10 +95,10 @@ class UserView extends Core\GenericView
 
                     <label class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400" for="file_input">Upload
                         file</label>
-                    <input
+                    <input name="file_input"
                         class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                        aria-describedby="file_input_help" id="pfp" type="file">
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">
+                        aria-describedby="file_input" id="pfp" type="file">
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input">
                         SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
 
                     <div class="relative z-0 w-full mb-5 group mt-5">
@@ -234,7 +234,7 @@ class UserView extends Core\GenericView
                                 <?= $user["u_login"] ?>
                             </td>
                             <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                <img class="w-10 h-10 rounded-full" src="https://rayanchouchane.com/images/R16-logo.png"
+                                <img class="w-10 h-10 rounded-full" src="public/<?= $user["u_profile_picture"] ?>"
                                     alt="Jese image">
                                 <div class="ps-3">
                                     <div class="text-base font-semibold">
