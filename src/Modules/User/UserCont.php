@@ -41,8 +41,19 @@ class UserCont extends Core\GenericController
 
     public function manageUser()
     {
+        $totalUsers = $this->model->getTotalUsers(); // Fonction dans votre modèle
+        $usersPerPage = 10;
+        $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+        $totalPages = ceil($totalUsers / $usersPerPage);
+        $offset = ($currentPage - 1) * $usersPerPage;
+
+        $users = $this->model->getUsersWithPagination($offset, $usersPerPage); // Fonction dans votre modèle
+
+        // Passez $users, $currentPage et $totalPages à votre vue (manageUser)
+        $this->view->manageUser($users, $currentPage, $totalPages, $totalUsers);
+
         $users = $this->model->getAllUserManage();
-        $this->view->manageUser($users);
+        //$this->view->manageUser($users);
     }
 
     public function deleteUser()

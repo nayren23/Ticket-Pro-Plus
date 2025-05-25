@@ -129,7 +129,7 @@ class UserModel extends Core\GenericModel
             $uploader->deleteFile($oldPicturePath);
         }
 
-        $profilePicturePath = $uploader->upload($_FILES['file_input'], $_SESSION['user']['u_id'] ?? uniqid('user_'));
+        $profilePicturePath = $uploader->upload($_FILES['file_input'], $userId ?? uniqid('user_'));
         $sql = "UPDATE tp_user SET u_profile_picture = :picture WHERE u_id = :user_id";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
@@ -170,6 +170,27 @@ class UserModel extends Core\GenericModel
             ':role_id' => $roleId,
             ':modified' => $now,
         ]);
+    }
+
+    public function getTotalUsers(): int
+    {
+        $sql = "SELECT COUNT(*) AS total FROM tp_user";
+        $stmt = $this->conn->query($sql);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
+
+    public function getUsersWithPagination(int $offset, int $limit): array
+    {
+        $sql = "SELECT u.*, r.r_name
+            FROM tp_user u
+            LEFT JOIN tp_role r ON u.r_id = r.r_id
+            LIMIT :limit OFFSET :offset";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function sanitize($data)
