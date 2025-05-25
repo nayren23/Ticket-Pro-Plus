@@ -39,6 +39,7 @@ class UserCont extends Core\GenericController
         header('Location: ?module=user&action=showAddUserForm'); // Redirigez vers le formulaire ou une page d'erreur
     }
 
+
     public function manageUser()
     {
         $totalUsers = $this->model->getTotalUsers(); // Fonction dans votre modèle
@@ -111,14 +112,49 @@ class UserCont extends Core\GenericController
                 'message' => 'User updated successfully'
             ];
             // Redirigez avec un message de succès
-        } else {
-            $_SESSION['toast'] = [
-                'type' => Core\ToastType::ERROR->value,
-                'message' => "Failed to update user"
-            ];
-            // Redirigez avec un message d'erreur
         }
 
+        header('Location: index.php?module=user&action=manageUser');
+    }
+
+    public function showEditPasswordForm()
+    {
+
+        if (isset($_GET['id'])) {
+            $userId = $_GET['id'];
+
+            if ($userId) {
+                $this->view->updatePasswordForm($userId);
+            } else {
+                // Gérez le cas où l'utilisateur n'existe pas (redirigez, affichez un message, etc.)
+                echo "User not found.";
+            }
+        } else {
+            // Gérez le cas où l'ID n'est pas fourni
+            echo "User ID not provided.";
+        }
+    }
+
+    public function updatePassword()
+    {
+
+        if (isset($_GET['id'])) {
+            $userId = $_GET['id'];
+
+            if ($userId) {
+                if ($this->model->updatePassword($userId)) {
+                    $_SESSION['toast'] = ['type' => 'success', 'message' => 'Mot de passe mis à jour avec succès.'];
+                } else {
+                    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Erreur lors de la mise à jour du mot de passe.'];
+                }
+            } else {
+                // Gérez le cas où l'utilisateur n'existe pas (redirigez, affichez un message, etc.)
+                echo "User not found.";
+            }
+        } else {
+            // Gérez le cas où l'ID n'est pas fourni
+            echo "User ID not provided.";
+        }
         header('Location: index.php?module=user&action=manageUser');
     }
 }

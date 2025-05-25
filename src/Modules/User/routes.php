@@ -31,7 +31,13 @@ switch ($action) {
     case 'updateUser':
         $controller->updateUser();
         break;
+    case 'editPasswordForm':
+        $controller->showEditPasswordForm();
+        break;
 
+    case 'updatePassword':
+        $controller->updatePassword();
+        break;
 
     default:
         http_response_code(404);

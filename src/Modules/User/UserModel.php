@@ -32,7 +32,6 @@ class UserModel extends Core\GenericModel
                 throw new \Exception('Invalid email format.');
             }
 
-            //$hashedPassword = password_hash($password1, PASSWORD_DEFAULT);
             $now = date('Y-m-d H:i:s');
 
             // Upload profile picture (simplifié, sans vérif format/taille)
@@ -138,9 +137,26 @@ class UserModel extends Core\GenericModel
         ]);
     }
 
+    public function isEmailUniqueForUpdate(int $userId, string $email): bool
+    {
+        $sql = "SELECT COUNT(*) AS count FROM tp_user WHERE u_email = :email AND u_id != :user_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':email' => $email, ':user_id' => $userId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['count'] === 0;
+    }
 
     public function updateUser(int $userId, string $login, string $firstname, string $lastname, string $email, ?string $phone, ?string $description, int $roleId, int $gender): bool
     {
+        // Vérifier si le nouvel email est unique pour cet utilisateur
+        if (!$this->isEmailUniqueForUpdate($userId, $email)) {
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::ERROR->value,
+                'message' => 'This email address is already in use by another user.'
+            ];
+            return false; // Indiquer que la mise à jour a échoué à cause de l'email
+        }
+
         if ((!empty($_FILES['file_input']['name']))) {
             $this->uploadProfilePicture($userId);
         }
@@ -170,6 +186,16 @@ class UserModel extends Core\GenericModel
             ':role_id' => $roleId,
             ':modified' => $now,
         ]);
+
+        if (!$result) {
+            // Gérer les autres erreurs de mise à jour (si nécessaire)
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::ERROR->value,
+                'message' => 'Error updating user information.'
+            ];
+            return false;
+        }
+        return true;
     }
 
     public function getTotalUsers(): int
@@ -196,5 +222,39 @@ class UserModel extends Core\GenericModel
     public function sanitize($data)
     {
         return htmlspecialchars(strip_tags(trim($data)));
+    }
+
+    public function updatePassword(int $userId)
+    {
+        $password = $_POST['password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        // Validation côté serveur (important !)
+        if (empty($password) || empty($confirmPassword)) {
+            $_SESSION['toast'] = ['type' => 'error', 'message' => 'Veuillez remplir tous les champs de mot de passe.'];
+            return;
+        }
+
+        if ($password !== $confirmPassword) {
+            $_SESSION['toast'] = ['type' => 'error', 'message' => 'Les mots de passe ne correspondent pas.'];
+            return;
+        }
+
+        // Validation de la force du mot de passe côté serveur (optionnel mais recommandé)
+        /*  $zxcvbnResult = \zxcvbn($password);
+        if ($zxcvbnResult['score'] < 3) { // Définir un seuil de force minimum
+            $_SESSION['toast'] = ['type' => 'warning', 'message' => 'Le mot de passe est considéré comme faible. Veuillez en choisir un plus fort.'];
+            return;
+        }*/
+
+        // Hasher le mot de passe avant de l'enregistrer
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $sql = "UPDATE tp_user SET u_password = :u_password WHERE u_id = :user_id";
+        $stmt = $this->conn->prepare($sql);
+        $result = $stmt->execute([
+            ':user_id' => $userId,
+            ':u_password' => $hashedPassword
+        ]);
+        return $result;
     }
 }
