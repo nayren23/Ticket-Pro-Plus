@@ -1,7 +1,7 @@
 <?php
 
 use TicketProPlus\App\Core;
-
+use TicketProPlus\App\Composants\NavbarComp;
 ?>
 
 <!DOCTYPE html>
@@ -29,17 +29,23 @@ use TicketProPlus\App\Core;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <!-- Script only -->
-    <title>TicketProPlus</title>
+    <title>Ticket-Pro-Plus</title>
 </head>
 
 <body>
+
     <?php
+    $navbar = new NavbarComp\NavbarCont();
+    $navbar->displayNavbar();
+
     $router = new Core\Router();
     ?>
     <script src="./src/Modules/User/UserScript.js"></script>
     <script src="./public/assets/js/passwordValidation.js"></script>
 
     <script src="./src/Core/utils.js"></script>
+
+
 </body>
 
 </html>

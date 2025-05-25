@@ -19,6 +19,11 @@ class LoginCont extends Core\GenericController
         $this->view->loginForm();
     }
 
+    public function logout()
+    {
+        $this->model->logout();
+    }
+
 
     /**
      * Authentifie un utilisateur en utilisant le modèle associé.

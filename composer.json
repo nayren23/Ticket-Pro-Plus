@@ -8,7 +8,8 @@
             "TicketProPlus\\App\\": "src/",
             "TicketProPlus\\App\\Modules\\": "src/Modules/",
             "TicketProPlus\\App\\Core\\": "src/Core/",
-            "TicketProPlus\\App\\Config\\": "src/Config/"
+            "TicketProPlus\\App\\Config\\": "src/Config/",
+            "TicketProPlus\\App\\Composants\\": "src/Composants/"
         }
     },
     "authors": [

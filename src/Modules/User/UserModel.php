@@ -97,7 +97,7 @@ class UserModel extends Core\GenericModel
 
     public function getUserById(int $userId): ?array
     {
-        $sql = "SELECT u_id, u_login, u_firstname, u_lastname, u_email, u_phone_number, u_gender, u_description, r_id
+        $sql = "SELECT u_id, u_login, u_firstname, u_lastname, u_email, u_phone_number, u_gender, u_description, r_id, u_profile_picture
                 FROM tp_user
                 WHERE u_id = :user_id";
         $stmt = $this->conn->prepare($sql);
