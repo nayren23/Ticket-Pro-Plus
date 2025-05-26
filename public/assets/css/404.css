@@ -10,17 +10,9 @@
 /* Les extends SCSS sont transformés en regroupements de sélecteurs CSS */
 
 /* Main Layout Styles */
-* {
-    box-sizing: border-box;
-}
 
-html,
-body {
-    margin: 0;
-    padding: 0;
-}
 
-body {
+.text-404 {
     font-family: "Fira Sans", sans-serif;
     color: #f5f6fa;
     /* $white */
