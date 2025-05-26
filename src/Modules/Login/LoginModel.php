@@ -8,6 +8,19 @@ use PDO, PDOException, TicketProPlus\App\Core;
 class LoginModel extends Core\GenericModel
 {
 
+    public function logout()
+    {
+        if (isset($_SESSION['user']['u_login'])) {
+            unset($_SESSION['user']['r_id']);
+            unset($_SESSION['user']['u_email']);
+            unset($_SESSION['user']['u_id']);
+            session_destroy();
+            return true;
+        } else {
+            return false; //Vous devez d abord vous connecté pour faire cette action !!!
+        }
+    }
+
     public function authenticate()
     {
 
@@ -15,9 +28,11 @@ class LoginModel extends Core\GenericModel
             $user = $this->getUserByLogin($_POST['login']);
             if ($user) {
                 if ($this->verifyPassword($_POST['password'], $user['u_password'])) {
-                    $_SESSION['u_login'] = $user['u_login'];
-                    $_SESSION['r_id'] = $user['r_id'];
-                    $_SESSION['u_email'] = $user['u_email'];
+                    $_SESSION['user']['u_login'] = $user['u_login'];
+                    $_SESSION['user']['r_id'] = $user['r_id'];
+                    $_SESSION['user']['u_email'] = $user['u_email'];
+                    $_SESSION['user']['u_id'] = $user['u_id'];
+                    var_dump($_SESSION['user']);
                     return true;
                 }
             } else {
