@@ -41,15 +41,17 @@ switch ($action) {
         $controller->updateUser();
         break;
     case 'editPasswordForm':
+        Authorization::requireRole([Role::ADMIN]);
         $controller->showEditPasswordForm();
         break;
 
     case 'updatePassword':
+        Authorization::requireRole([Role::ADMIN]);
         $controller->updatePassword();
         break;
 
     default:
         http_response_code(404);
-        echo "404 - Page not found module User";
+        include __DIR__ . '/../../../public/errors/404.html';
         break;
 }

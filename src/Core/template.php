@@ -26,7 +26,7 @@ use TicketProPlus\App\Core\Auth\Authorization;
     <!-- CSS only -->
     <link href="./public/assets/css/main.css" rel="stylesheet" />
     <link href="./public/assets/css/404.css" rel="stylesheet" />
-
+    <link href="./public/assets/css/403.css" rel="stylesheet" />
     <link rel=" icon" href="./public/assets/images/Ticket_Pro_favicon.png" type="image/x-icon">
 
     <!-- font-awesome -->

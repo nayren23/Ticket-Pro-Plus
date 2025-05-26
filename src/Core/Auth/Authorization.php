@@ -43,7 +43,7 @@ class Authorization
                 exit;
             } else {
                 http_response_code(403);
-                echo "403 - Forbidden";
+                include __DIR__ . '/../../../public/errors/403.html';
                 exit;
             }
         }

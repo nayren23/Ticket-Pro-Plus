@@ -2,6 +2,8 @@
 
 namespace TicketProPlus\App\Core;
 
+use TicketProPlus\App\Config\Config;
+
 use TicketProPlus\App\Core;
 
 class Router
