@@ -2,6 +2,8 @@
 
 use TicketProPlus\App\Core;
 use TicketProPlus\App\Composants\NavbarComp;
+use TicketProPlus\App\Core\Auth\Role;
+use TicketProPlus\App\Core\Auth\Authorization;
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +25,8 @@ use TicketProPlus\App\Composants\NavbarComp;
 
     <!-- CSS only -->
     <link href="./public/assets/css/main.css" rel="stylesheet" />
+    <link href="./public/assets/css/404.css" rel="stylesheet" />
+
     <link rel=" icon" href="./public/assets/images/Ticket_Pro_favicon.png" type="image/x-icon">
 
     <!-- font-awesome -->
@@ -35,11 +39,17 @@ use TicketProPlus\App\Composants\NavbarComp;
 <body>
 
     <?php
-    $navbar = new NavbarComp\NavbarCont();
-    $navbar->displayNavbar();
 
+
+    if (Authorization::hasRole([Role::ADMIN, Role::DEVELOPER, Role::REPORTER])) {
+        $navbar = new NavbarComp\NavbarCont();
+        $navbar->displayNavbar();
+    }
     $router = new Core\Router();
+
     ?>
+
+
     <script src="./src/Modules/User/UserScript.js"></script>
     <script src="./public/assets/js/passwordValidation.js"></script>
 

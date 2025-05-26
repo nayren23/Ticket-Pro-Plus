@@ -22,6 +22,7 @@ class LoginCont extends Core\GenericController
     public function logout()
     {
         $this->model->logout();
+        header('Location: ?module=login&action=showLoginForm');
     }
 
 
@@ -40,7 +41,7 @@ class LoginCont extends Core\GenericController
         $user = $this->model->authenticate();
 
         if ($user) {
-            echo "Connexion Réussie";
+            echo "Connexion Réussie<br> Il faudra rediriger sur le home";
             //header('Location: /user');
             exit;
         } else {

@@ -63,7 +63,7 @@ confirmPasswordInput.addEventListener('input', () => {
 form.addEventListener('submit', (event) => {
     const passwordScore = zxcvbn(passwordInput.value).score
     if (passwordScore < 3) {
-        event.preventDefault() // Empêche la soumission
+        event.preventDefault()
         alert('Please enter a strong password.')
     } else if (passwordInput.value !== confirmPasswordInput.value) {
         event.preventDefault()

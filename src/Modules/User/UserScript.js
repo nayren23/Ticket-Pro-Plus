@@ -3,20 +3,20 @@
  */
 $(document).ready(function () {
 
-    // Attacher l'événement d'ouverture du modal de suppression
+    // Attache l'événement d'ouverture du modal de suppression
     $('table').on('click', '[data-modal-target="popup-modal"]', function (event) {
         event.preventDefault()
-        const userIdToDelete = this.dataset.userId // Récupérer l'ID depuis le lien cliqué
-        const confirmDeleteButton = $('#popup-modal .delete-user-link') // Sélectionner le bouton "Yes, I'm sure"
-        confirmDeleteButton.data('user-id', userIdToDelete) // Attribuer l'ID au bouton
-        const rowToRemove = $(this).closest('tr') // Récupérer la ligne à supprimer
-        confirmDeleteButton.data('row-to-remove', rowToRemove) // Stocker la ligne
+        const userIdToDelete = this.dataset.userId
+        const confirmDeleteButton = $('#popup-modal .delete-user-link')
+        confirmDeleteButton.data('user-id', userIdToDelete)
+        const rowToRemove = $(this).closest('tr')
+        confirmDeleteButton.data('row-to-remove', rowToRemove)
     })
 
     $('#popup-modal .delete-user-link').on('click', function (event) {
         event.preventDefault()
 
-        const userId = $(this).data('user-id') // Récupérer l'ID stocké dans le bouton
+        const userId = $(this).data('user-id')
         const rowToRemove = $(this).data('row-to-remove')
         const urlToDelete = "/Ticket-Pro-Plus/?module=user&action=deleteUser"
 

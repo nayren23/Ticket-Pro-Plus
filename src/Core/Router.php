@@ -24,7 +24,7 @@ class Router
         if (isset($_SESSION['toast'])) {
             $toast = $_SESSION['toast'];
             $this->view->displayToast($toast['type'], $toast['message']);
-            unset($_SESSION['toast']); // Supprimer le message de la session après l'affichage
+            unset($_SESSION['toast']);
         }
 
         $modulePath = __DIR__ . '/../Modules/' . ucfirst($this->controller) . '/routes.php';
@@ -33,7 +33,8 @@ class Router
         if (file_exists($modulePath)) {
             require_once $modulePath;
         } else {
-            echo "Module introuvable."; #TODO, changer par page 404
+            http_response_code(404);
+            include __DIR__ . '/../../public/errors/404.html';
         }
     }
 
@@ -42,7 +43,7 @@ class Router
         if (isset($_SESSION['toast'])) {
             $toast = $_SESSION['toast'];
             $this->view->displayToast($toast['type'], $toast['message']);
-            unset($_SESSION['toast']); // Supprimer le message de la session après l'affichage
+            unset($_SESSION['toast']);
         }
     }
 }

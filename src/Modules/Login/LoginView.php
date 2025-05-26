@@ -9,7 +9,7 @@ class LoginView extends Core\GenericView
 
     public function  __construct()
     {
-        parent::__construct(); // comme un super
+        parent::__construct();
     }
 
     /**

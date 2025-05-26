@@ -16,15 +16,15 @@ class UserView extends Core\GenericView
     {
         $title = ($userToEdit === null) ? 'Sign up | Ticket Pro +' : 'Edit User | Ticket Pro +';
         $heading = ($userToEdit === null) ? 'Add a user' : 'Edit User';
-        $action = ($userToEdit === null) ? 'index.php?module=user&action=addUser' : 'index.php?module=user&action=updateUser'; // Nouvelle action pour l'édition
+        $action = ($userToEdit === null) ? 'index.php?module=user&action=addUser' : 'index.php?module=user&action=updateUser';
         $loginValue = htmlspecialchars($userToEdit['u_login'] ?? '');
         $firstnameValue = htmlspecialchars($userToEdit['u_firstname'] ?? '');
         $lastnameValue = htmlspecialchars($userToEdit['u_lastname'] ?? '');
         $emailValue = htmlspecialchars($userToEdit['u_email'] ?? '');
         $phoneValue = htmlspecialchars($userToEdit['u_phone_number'] ?? '');
         $descriptionValue = htmlspecialchars($userToEdit['u_description'] ?? '');
-        $roleId = htmlspecialchars($userToEdit['r_id'] ?? ''); // Supposant que vous avez l'ID du rôle
-        $genderValue = htmlspecialchars($userToEdit['u_gender'] ?? ''); // Supposant un champ gender
+        $roleId = htmlspecialchars($userToEdit['r_id'] ?? '');
+        $genderValue = htmlspecialchars($userToEdit['u_gender'] ?? '');
 
 ?>
         <title> <?= $title ?> </title>
