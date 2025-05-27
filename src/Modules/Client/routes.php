@@ -25,10 +25,20 @@ switch ($action) {
         $controller->showAddClientForm();
         break;
 
+    case 'showEditClientForm':
+        Authorization::requireRole([Role::ADMIN]);
+        $controller->editClient();
+        break;
+
     case 'deleteClient':
         Authorization::requireRole([Role::ADMIN]);
         $clientIdToDelete = $_POST['id'];
         $controller->deleteClient($clientIdToDelete);
+        break;
+
+    case 'updateClient':
+        Authorization::requireRole([Role::ADMIN]);
+        $controller->updateClient();
         break;
         
  

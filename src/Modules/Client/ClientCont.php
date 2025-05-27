@@ -69,6 +69,54 @@ class ClientCont extends Core\GenericController
     }
 
     /**
+     * Orchestre à la vue d'afficher le formulaire de modification d'un client.
+     *
+     * @return void affiche le formulaire de modification d'un client si l'ID du client est fourni,
+     *               avec un toast de succès si le client est modifié, ou un toast d'erreur si
+     *               une exception est levée.
+     */ 
+    public function editClient()
+    {
+        if (isset($_GET['id'])) {
+            $clientId = $_GET['id'];
+
+            $client = $this->model->getClientById($clientId);
+            
+            if ($client) {
+                $this->view->showClientForm($client);
+            } else {
+                echo "User not found.";
+            }
+        } else {
+            echo "User ID not provided.";
+        }
+    }
+
+    /**
+     * Met à jour le client correspondant à l'ID donné avec les informations fournies.
+     *
+     * @return void redirige vers la page de gestion des clients avec un toast de succès si le
+     * client est mis à jour, ou un toast d'erreur si une exception est levée.
+     */ 
+    public function updateClient()
+    {
+        $clientId = $_POST['id'];
+        $firstname = $_POST['firstname'];
+        $lastname = $_POST['lastname'];
+
+        $result = $this->model->updateClient($clientId, $firstname, $lastname);
+
+        if ($result) {
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::SUCCESS->value,
+                'message' => 'Client updated successfully'
+            ];
+        }
+
+        header('Location: index.php?module=client&action=manageClient');
+    }
+
+    /**
      * Orchestre au model de supprimer un client.
      *
      * @throws \Exception si 'ClientModel::deleteClient()' échoue.

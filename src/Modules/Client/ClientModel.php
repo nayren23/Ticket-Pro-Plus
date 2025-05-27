@@ -80,4 +80,50 @@ class ClientModel extends Core\GenericModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Retourne le client correspondant à l'ID donné, ou null si le client n'existe pas.
+     *
+     * @param int $clientId l'ID du client à chercher.
+     *
+     * @return array|null Un tableau associatif contenant les clés 'id', 'firstname' et 'lastname'
+     *                    correspondant au client demandé, ou null si le client n'existe pas.
+     */
+    public function getClientById(int $clientId): ?array
+    {
+        $sql = "SELECT c.* FROM tp_client c WHERE c_id = :client_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':client_id' => $clientId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    /**
+     * Met à jour un client dans la base de données.
+     *
+     * @param int $clientId l'ID du client à mettre à jour.
+     * @param string $firstname le prénom du client.
+     * @param string $lastname le nom du client.
+     *
+     * @return bool renvoie true si la mise à jour est effectuée, false sinon.
+     */
+    
+    public function updateClient(int $clientId, string $firstname, string $lastname): bool
+    {
+        $sql = "UPDATE tp_client SET c_firstname = :firstname, c_lastname = :lastname WHERE c_id = :client_id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            ':client_id' => $clientId,
+            ':firstname' => $firstname,
+            ':lastname' => $lastname,
+        ]);
+
+        if (!$result) {
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::ERROR->value,
+                'message' => 'Error updating client information.'
+            ];
+            return false;
+        }
+        return true;
+    }
 }

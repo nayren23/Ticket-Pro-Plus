@@ -176,8 +176,8 @@ class ClientView extends Core\GenericView
         $title = ($clientToEdit === null) ? 'Add Client | Ticket Pro +' : 'Edit Client | Ticket Pro +';
         $heading = ($clientToEdit === null) ? 'Add a client' : 'Edit Client';
         $action = ($clientToEdit === null) ? 'index.php?module=client&action=addClient' : 'index.php?module=client&action=updateClient';
-        $firstnameValue = htmlspecialchars($clientToEdit['firstname'] ?? '');
-        $lastnameValue = htmlspecialchars($clientToEdit['lastname'] ?? '');
+        $firstnameValue = htmlspecialchars($clientToEdit['c_firstname'] ?? '');
+        $lastnameValue = htmlspecialchars($clientToEdit['c_lastname'] ?? '');
 ?>
         <title><?= $title ?></title>
         <div class="mt-6">
@@ -185,7 +185,7 @@ class ClientView extends Core\GenericView
                 <form class="max-w-md mx-auto" action="<?= $action ?>" method="POST">
                     <h2 class="text-4xl font-extrabold text-white dark:text-white mb-6"><?= $heading ?></h2>
                     <?php if ($clientToEdit !== null): ?>
-                        <input type="hidden" name="id" value="<?= htmlspecialchars($clientToEdit['id']) ?>">
+                        <input type="hidden" name="id" value="<?= htmlspecialchars($clientToEdit['c_id']) ?>">
                     <?php endif; ?>
                     <div class="relative z-0 w-full mb-5 group">
                         <input type="text" name="firstname" id="firstname"
