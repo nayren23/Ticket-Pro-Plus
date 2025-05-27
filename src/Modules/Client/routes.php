@@ -1,0 +1,35 @@
+<?php
+
+namespace TicketProPlus\App\Modules\Client;
+
+use TicketProPlus\App\Core\Auth\Role;
+use TicketProPlus\App\Core\Auth\Authorization;
+
+$controller = new ClientCont();
+
+$action = $_GET['action'];
+
+switch ($action) {
+    case 'manageClient':
+        Authorization::requireRole([Role::ADMIN]);
+        $controller->manageClient();
+        break;
+
+    case 'addClient':
+        Authorization::requireRole([Role::ADMIN]);
+        $controller->addClient();
+        break;
+    
+    case 'showAddClientForm':
+        Authorization::requireRole([Role::ADMIN]);
+        $controller->showAddClientForm();
+        break;
+        
+ 
+    default:
+        http_response_code(404);
+        include __DIR__ . '/../../../public/errors/404.html';
+        break;
+}
+
+?>

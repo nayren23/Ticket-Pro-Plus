@@ -21,11 +21,12 @@ class UserCont extends Core\GenericController
     public function addUser()
     {
         try {
-            $this->model->addUser();
-            $_SESSION['toast'] = [
+            if($this->model->addUser()){
+                $_SESSION['toast'] = [
                 'type' => Core\ToastType::SUCCESS->value,
                 'message' => 'User successfully created !'
-            ];
+                ];
+            }
         } catch (\Exception $e) {
             $_SESSION['toast'] = [
                 'type' => Core\ToastType::ERROR->value,

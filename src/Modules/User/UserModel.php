@@ -56,7 +56,9 @@ class UserModel extends Core\GenericModel
             if ((!empty($_FILES['file_input']['name']))) {
                 $this->uploadProfilePicture($userId);
             }
+            return true;
         }
+        return false;
     }
 
     public function checkLogin($login)
