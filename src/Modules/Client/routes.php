@@ -24,6 +24,12 @@ switch ($action) {
         Authorization::requireRole([Role::ADMIN]);
         $controller->showAddClientForm();
         break;
+
+    case 'deleteClient':
+        Authorization::requireRole([Role::ADMIN]);
+        $clientIdToDelete = $_POST['id'];
+        $controller->deleteClient($clientIdToDelete);
+        break;
         
  
     default:
