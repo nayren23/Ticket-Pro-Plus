@@ -16,17 +16,26 @@ class ClientModel extends Core\GenericModel
     public function addClient()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $firstname = $_POST['firstname'] ?? '';
-            $lastname = $_POST['lastname'] ?? '';
+            $firstname = $this->sanitize($_POST['firstname']);
+            $lastname = $this->sanitize($_POST['lastname']);
+            $email = $this->sanitize($_POST['email']);
             if (empty($firstname) || empty($lastname)) {
                 throw new \Exception('Firstname and lastname are required.');
             }
-            $sql = "INSERT INTO tp_client (c_firstname, c_lastname) VALUES (:firstname, :lastname)";
+            if ($this->checkEmail($email)) {
+                throw new \Exception('Email already used.');
+            }
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                throw new \Exception('Invalid email format.');
+            }
+            $sql = "INSERT INTO tp_client (c_firstname, c_lastname, c_email) VALUES (:firstname, :lastname, :email)";
             $statement = $this->conn->prepare($sql);
 
             $statement->execute([
                 ':firstname' => $firstname,
                 ':lastname' => $lastname,
+                ':email' => $email
             ]);
             return true;
         }
@@ -107,14 +116,31 @@ class ClientModel extends Core\GenericModel
      * @return bool renvoie true si la mise à jour est effectuée, false sinon.
      */
     
-    public function updateClient(int $clientId, string $firstname, string $lastname): bool
+    public function updateClient(int $clientId, string $firstname, string $lastname, string $email): bool
     {
-        $sql = "UPDATE tp_client SET c_firstname = :firstname, c_lastname = :lastname WHERE c_id = :client_id";
+        if (!$this->isEmailUniqueForUpdate($clientId, $email)) {
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::ERROR->value,
+                'message' => 'This email address is already in use by another client.'
+            ];
+            return false;
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $_SESSION['toast'] = [
+                'type' => Core\ToastType::ERROR->value,
+                'message' => 'Invalid email format.'
+            ];
+            return false;
+        }
+    
+        $sql = "UPDATE tp_client SET c_firstname = :firstname, c_lastname = :lastname, c_email = :email WHERE c_id = :client_id";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([
-            ':client_id' => $clientId,
-            ':firstname' => $firstname,
-            ':lastname' => $lastname,
+            ':client_id' => $this->sanitize($clientId),
+            ':firstname' => $this->sanitize($firstname),
+            ':lastname' => $this->sanitize($lastname),
+            ':email' => $this->sanitize($email)
         ]);
 
         if (!$result) {
@@ -126,4 +152,53 @@ class ClientModel extends Core\GenericModel
         }
         return true;
     }
+
+    /**
+     * Nettoie les données en supprimant les balises HTML et les espaces inutiles,
+     * puis encode les caractères spéciaux en entités HTML.
+     *
+     * @param mixed $data Les données à nettoyer.
+     *
+     * @return string Les données nettoyées.
+     */
+
+    public function sanitize($data)
+    {
+        return htmlspecialchars(strip_tags(trim($data)));
+    }
+    
+    /**
+     * Vérifie si l'email existe déjà dans la base de données.
+     * 
+     * @param string $email l'email à vérifier.
+     * 
+     * @return array|null Un tableau associatif contenant la clé 'c_email'
+     *                    correspondant à l'email demandé, ou null si l'email n'existe pas.
+     */
+    public function checkEmail($email)
+    {
+        $sql = "SELECT c_email from tp_client WHERE c_email =:c_email";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['c_email' => htmlspecialchars($email)]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Vérifie si l'email est unique.
+     *
+     * @param int $clientId L'ID du client à exclure de la vérification.
+     * @param string $email L'email à vérifier.
+     *
+     * @return bool Renvoie true si l'email est unique, false sinon.
+     */
+
+    public function isEmailUniqueForUpdate(int $clientId, string $email): bool
+    {
+        $sql = "SELECT COUNT(*) AS count FROM tp_client WHERE c_email = :email AND c_id != :client_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':email' => $email, ':client_id' => $clientId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['count'] === 0;
+    }
+
 }

@@ -103,8 +103,9 @@ class ClientCont extends Core\GenericController
         $clientId = $_POST['id'];
         $firstname = $_POST['firstname'];
         $lastname = $_POST['lastname'];
+        $email = $_POST['email'];
 
-        $result = $this->model->updateClient($clientId, $firstname, $lastname);
+        $result = $this->model->updateClient($clientId, $firstname, $lastname, $email);
 
         if ($result) {
             $_SESSION['toast'] = [
