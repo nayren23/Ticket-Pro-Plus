@@ -34,7 +34,7 @@ $(document).ready(function () {
             )
             .fail(function (jqXHR) {
                 afficherMessage("You cannot delete your own account !", 'error', true)
-                console.error("Erreur lors de la suppression de l'utilisateur.", jqXHR.responseText)
+                console.error("Failed to delete user.", jqXHR.responseText)
             })
     })
 })

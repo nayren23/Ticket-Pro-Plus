@@ -106,16 +106,19 @@ class ClientModel extends Core\GenericModel
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
+   
     /**
-     * Met à jour un client dans la base de données.
+     * Met à jour le client correspondant à l'ID donné.
      *
      * @param int $clientId l'ID du client à mettre à jour.
-     * @param string $firstname le prénom du client.
-     * @param string $lastname le nom du client.
+     * @param string $firstname le nouveau prénom du client.
+     * @param string $lastname le nouveau nom du client.
+     * @param string $email le nouveau courriel du client.
+     * @param int $projectId [optional] l'ID du projet à mettre à jour avec le client.
      *
      * @return bool renvoie true si la mise à jour est effectuée, false sinon.
      */
-    
+
     public function updateClient(int $clientId, string $firstname, string $lastname, string $email, int $projectId = null): bool
     {
         if (!$this->isEmailUniqueForUpdate($clientId, $email)) {

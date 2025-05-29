@@ -69,5 +69,97 @@ class ProjectCont extends Core\GenericController
         $this->view->showProjectForm(null, $clients);
     }
 
+    /**
+     * Orchestre au model de supprimer un projet.
+     *
+     * @throws \Exception si 'ProjectModel::deleteProject()' échoue.
+     *
+     * @return void renvoie un code HTTP 200 si le projet est supprimé, ou un code 500 
+     * avec un message d'erreur en JSON si une exception est levée.
+     */
+    public function deleteProject()
+    {
+        try {
+            $projectId = $_POST['id'];
+            $this->model->deleteProject($projectId);
+            http_response_code(200);
+        } catch (\Exception $e) {
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Orchestre à la vue d'afficher le formulaire de modification d'un projet.
+     *
+     * @return void affiche le formulaire de modification d'un projet si l'ID du projet est fourni,
+     *               avec un toast de succès si le projet est modifié, ou un toast d'erreur si
+     *               une exception est levée.
+     */
+    public function editProject()
+    {
+        if (isset($_GET['id'])) {
+            $projectId = $_GET['id'];
+
+            $project = $this->model->getProjectById($projectId);
+            
+            if ($project) {
+                $this->view->showProjectForm($project, null); // Pass the project data to the view($client);
+            } else {
+                echo "Project not found.";
+            }
+        } else {
+            echo "Project ID not provided.";
+        }
+    }
+
+    /**
+     * Met à jour un projet.
+     *
+     * @return void redirige vers le formulaire de gestion des projets avec un toast de succès si le
+     * projet est mis à jour, ou un toast d'erreur si une exception est levée.
+     */
+    public function updateProject()
+    {
+        $projectId = $_POST['id'];
+        $name = $_POST['name'];
+        $description = $_POST['description'];
+        $dueDateRaw = $_POST['due_date'];
+        $dateTime = \DateTime::createFromFormat('m/d/Y', $dueDateRaw);
+        $dueDate = $dateTime->format('Y-m-d') .' 00:00:00';
+        $closed = $_POST['closed'] ?? 0;
+        $clientId = empty($_POST['clientId']) ? null : $_POST['clientId'];
+        
+        $result = $this->model->updateProject($projectId, $name, $description, $dueDate, $closed, $clientId);
+
+        if ($result) {
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::SUCCESS->value,
+                'message' => 'Project updated successfully'
+            ];
+        }
+
+        header('Location: index.php?module=project&action=manageProject');
+    }
+
+    public function addClient()
+    {
+         if (isset($_GET['projectId'])) {
+            $projectId = $_GET['projectId'];
+
+            $project = $this->model->getProjectById($projectId);
+            $clients = $this->model->getAllClients();
+            
+            if ($project) {
+                $this->view->showProjectForm($project, $clients);
+            } else {
+                echo "Project not found.";
+            }
+        } else {
+            echo "Project ID not provided.";
+        }
+    }
+
 
 }

@@ -92,6 +92,13 @@ class ClientCont extends Core\GenericController
         }
     }
 
+    /**
+     * Orchestre à la vue d'afficher le formulaire d'ajout de projet pour un client.
+     *
+     * @return void affiche le formulaire d'ajout de projet pour le client dont l'ID est fourni,
+     *               avec un toast de succès si le projet est créé, ou un toast d'erreur si
+     *               une exception est levée.
+     */ 
     public function addProject()
     {
          if (isset($_GET['clientId'])) {

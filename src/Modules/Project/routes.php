@@ -25,6 +25,27 @@ switch ($action) {
         Authorization::requireRole([Role::ADMIN]);
         $controller->showAddProjectForm();
         break;
+    
+    case 'deleteProject':
+        Authorization::requireRole([Role::ADMIN]);
+        $projectIdToDelete = $_POST['id'];
+        $controller->deleteProject($projectIdToDelete);
+        break;
+
+    case 'showEditProjectForm':
+        Authorization::requireRole([Role::ADMIN]);
+        $controller->editProject();
+        break;
+
+    case 'updateProject':
+        Authorization::requireRole([Role::ADMIN]);
+        $controller->updateProject();
+        break;
+
+    case 'addClient':
+        Authorization::requireRole([Role::ADMIN]);
+        $controller->addClient();
+        break;
 
     default:
         http_response_code(404);

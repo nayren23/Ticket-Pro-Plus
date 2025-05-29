@@ -126,4 +126,82 @@ class ProjectModel extends Core\GenericModel
         return htmlspecialchars(strip_tags(trim($data)));
     }
 
+    /**
+     * Supprime un projet par son ID.
+     *
+     * @param int $projectId l'ID du projet à supprimer.
+     *
+     * @return bool renvoie true si la suppression est effectuée, false sinon.
+     */
+    public function deleteProject(int $projectId): bool
+    {
+        $sql = "DELETE FROM tp_project WHERE p_id = :project_id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([':project_id' => $projectId]);
+    }
+
+    /**
+     * Retourne le projet correspondant à l'ID donné, ou null si le projet n'existe pas.
+     *
+     * @param int $projectId l'ID du projet à chercher.
+     *
+     * @return array|null Un tableau associatif contenant les clés 'p_id', 'p_name', 'p_description',
+     *                    'p_creation', 'p_due_date', 'p_closed', 'c_id', 'firstname', 'lastname' et 'email'
+     *                    correspondant au projet demandé, ou null si le projet n'existe pas.
+     */
+    public function getProjectById(int $projectId): ?array
+    {
+        $sql = "SELECT p.* FROM tp_project p WHERE p_id = :project_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':project_id' => $projectId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    /**
+     * Met à jour un projet.
+     *
+     * @param int    $projectId      l'ID du projet à mettre à jour.
+     * @param string $name           le nom du projet.
+     * @param string $description    la description du projet.
+     * @param string $dueDate        la date de fin du projet.
+     * @param bool   $closed         si le projet est clos ou non.
+     * @param int    $clientId       l'ID du client lié au projet.
+     *
+     * @return bool renvoie true si la mise à jour est effectuée, false sinon.
+     */
+    public function updateProject($projectId, $name, $description, $dueDate, $closed, $clientId) : bool
+    {
+        if ($clientId !== null) {
+            $sql = "UPDATE tp_project SET p_name = :name, p_description = :description, p_due_date = :due_date, p_closed = :closed, c_id = :client_id WHERE p_id = :project_id";
+            $stmt = $this->conn->prepare($sql);
+            return $stmt->execute([
+                ':name' => $name,
+                ':description' => $description,
+                ':due_date' => $dueDate,
+                ':closed' => $closed,
+                ':project_id' => $projectId,
+                ':client_id' => $clientId
+            ]);
+        }
+        else{
+            $sql = "UPDATE tp_project SET p_name = :name, p_description = :description, p_due_date = :due_date, p_closed = :closed, c_id = NULL WHERE p_id = :project_id";
+            $stmt = $this->conn->prepare($sql);
+            return $stmt->execute([
+                ':name' => $name,
+                ':description' => $description,
+                ':due_date' => $dueDate,
+                ':closed' => $closed,
+                ':project_id' => $projectId
+            ]);
+        }
+
+        if (!$result) {
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::ERROR->value,
+                'message' => 'Error updating project information.'
+            ];
+            return false;
+        }
+        return true;
+    }
 }
