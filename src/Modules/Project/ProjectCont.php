@@ -14,9 +14,21 @@ class ProjectCont extends Core\GenericController
         $this->view = new ProjectView();
     }
 
-    public function manageProject()
+    /**
+     * Orchestre à la vue d'afficher la liste des projets
+     *
+     * @return void
+     */
+    public function manageProject($clientId = null)
     {
-        $this->view->manageProject();
+        $totalProjects = $this->model->getTotalProjects();
+        $projectsPerPage = 10;
+        $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+        $totalPages = ceil($totalProjects / $projectsPerPage);
+        $offset = ($currentPage - 1) * $projectsPerPage;
+
+        $projects = $this->model->getProjectsWithPagination($offset, $projectsPerPage, $clientId);
+        $this->view->manageProject($projects, $currentPage, $totalPages, $totalProjects);
     }
 
     /**

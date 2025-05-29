@@ -40,6 +40,11 @@ switch ($action) {
         Authorization::requireRole([Role::ADMIN]);
         $controller->updateClient();
         break;
+
+    case 'addProject':
+        Authorization::requireRole([Role::ADMIN]);
+        $controller->addProject();
+        break;
         
  
     default:

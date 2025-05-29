@@ -100,18 +100,16 @@ class ClientView extends Core\GenericView
                             </td>
                             <td class="px-6 py-4">
                                 <div>
-                                    <a href="?module=client&action=showProject&id=<?= htmlspecialchars($client['c_id']); ?>"
-                                        type="button"
-                                        data-modal-target="editClientModal"
-                                        data-modal-show="editClientModal"
-                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline block mb-2">View projects</a>
+                                    <a href="?module=project&action=manageProject&clientId=<?= htmlspecialchars($client['c_id']); ?>"
+                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline block mb-2">
+                                        View projects
+                                    </a>
                                 </div>
                                 <div>
-                                    <a href="?module=client&action=showAddProject&id=<?= htmlspecialchars($client['c_id']); ?>"
-                                        type="button"
-                                        data-modal-target="editClientModal"
-                                        data-modal-show="editClientModal"
-                                        class="font-medium text-green-600 dark:text-blue-500 hover:underline block mb-2">Add project</a>
+                                    <a href="?module=client&action=addProject&clientId=<?= htmlspecialchars($client['c_id']); ?>"
+                                        class="font-medium text-green-600 dark:text-blue-500 hover:underline block mb-2">
+                                        Add project
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -166,14 +164,16 @@ class ClientView extends Core\GenericView
 <?php
     }
 
+    
     /**
      * Affiche le formulaire pour ajouter ou modifier un client.
      * 
      * @param array $clientToEdit le client à modifier, null si c'est un ajout.
+     * @param array $projects la liste des projets pour le champ de formulaire associé.
      * 
      * @return void
      */
-    public function showClientForm($clientToEdit = null)
+    public function showClientForm($clientToEdit = null, $projects = null)
     {
         $title = ($clientToEdit === null) ? 'Add Client | Ticket Pro +' : 'Edit Client | Ticket Pro +';
         $heading = ($clientToEdit === null) ? 'Add a client' : 'Edit Client';
@@ -192,26 +192,44 @@ class ClientView extends Core\GenericView
                     <?php endif; ?>
                     <div class="relative z-0 w-full mb-5 group">
                         <input type="text" name="firstname" id="firstname"
-                            class="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" " value="<?= $firstnameValue ?>" required />
+                            class="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer <?= isset($projects) ? 'cursor-not-allowed' : '' ?>"
+                            placeholder=" " value="<?= $firstnameValue ?>" <?= isset($projects) ? 'readonly' : '' ?> required />
                         <label for="firstname"
                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">First name</label>
                     </div>
                     <div class="relative z-0 w-full mb-5 group">
                         <input type="text" name="lastname" id="lastname"
-                            class="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" " value="<?= $lastnameValue ?>" required />
+                            class="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer <?= isset($projects) ? 'cursor-not-allowed' : '' ?>"
+                            placeholder=" " value="<?= $lastnameValue ?>" <?= isset($projects) ? 'readonly' : '' ?> required />
                         <label for="lastname"
                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Last name</label>
                     </div>
                     <div class="relative z-0 w-full mb-5 group">
                         <input type="email" name="email" id="email"
-                            class="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" " value="<?= $emailValue ?>" required />
+                            class="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer <?= isset($projects) ? 'cursor-not-allowed' : '' ?>"
+                            placeholder=" " value="<?= $emailValue ?>" <?= isset($projects) ? 'readonly' : '' ?> required />
                         <label for="email"
                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email
                             address</label>
                     </div>
+
+                    <?php if (isset($projects) && is_array($projects)): ?>
+                        <div class="mb-5">
+                            <label for="projectSelect" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                Associate to a project
+                            </label>
+                            <select id="projectSelect" name="projectId"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="">Choose a project</option>
+                                <?php foreach ($projects as $project): ?>
+                                    <option value="<?= htmlspecialchars($project['p_id']) ?>">
+                                        <?= htmlspecialchars($project['p_name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    <?php endif; ?>
+
                     <button type="submit"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         <?= ($clientToEdit === null) ? 'Submit' : 'Save Changes' ?>

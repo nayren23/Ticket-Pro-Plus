@@ -12,7 +12,8 @@ $action = $_GET['action'];
 switch ($action) {
     case 'manageProject':
         Authorization::requireRole([Role::ADMIN]);
-        $controller->manageProject();
+        isset($_GET['clientId']) ? $clientId = $_GET['clientId'] : $clientId = null;
+        $controller->manageProject($clientId);
         break;
 
     case 'addProject':

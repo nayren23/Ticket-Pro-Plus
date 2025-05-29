@@ -92,6 +92,23 @@ class ClientCont extends Core\GenericController
         }
     }
 
+    public function addProject()
+    {
+         if (isset($_GET['clientId'])) {
+            $clientId = $_GET['clientId'];
+
+            $client = $this->model->getClientById($clientId);
+            
+            if ($client) {
+                $this->view->showClientForm($client, $this->model->getAllProjectsNoClient()); 
+            } else {
+                echo "User not found.";
+            }
+        } else {
+            echo "User ID not provided.";
+        }
+    }
+
     /**
      * Met à jour le client correspondant à l'ID donné avec les informations fournies.
      *
@@ -104,8 +121,9 @@ class ClientCont extends Core\GenericController
         $firstname = $_POST['firstname'];
         $lastname = $_POST['lastname'];
         $email = $_POST['email'];
+        $projectId = !empty($_POST['projectId']) ? $_POST['projectId'] : null;
 
-        $result = $this->model->updateClient($clientId, $firstname, $lastname, $email);
+        $result = $this->model->updateClient($clientId, $firstname, $lastname, $email, $projectId);
 
         if ($result) {
             $_SESSION['toast'] = [

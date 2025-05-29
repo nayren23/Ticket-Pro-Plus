@@ -116,7 +116,7 @@ class ClientModel extends Core\GenericModel
      * @return bool renvoie true si la mise à jour est effectuée, false sinon.
      */
     
-    public function updateClient(int $clientId, string $firstname, string $lastname, string $email): bool
+    public function updateClient(int $clientId, string $firstname, string $lastname, string $email, int $projectId = null): bool
     {
         if (!$this->isEmailUniqueForUpdate($clientId, $email)) {
             $_SESSION['toast'] = [
@@ -134,14 +134,24 @@ class ClientModel extends Core\GenericModel
             return false;
         }
     
-        $sql = "UPDATE tp_client SET c_firstname = :firstname, c_lastname = :lastname, c_email = :email WHERE c_id = :client_id";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            ':client_id' => $this->sanitize($clientId),
-            ':firstname' => $this->sanitize($firstname),
-            ':lastname' => $this->sanitize($lastname),
-            ':email' => $this->sanitize($email)
-        ]);
+        if ($projectId) {
+            $sql = "UPDATE tp_project SET c_id = :client_id WHERE p_id = :project_id";
+            $stmt = $this->conn->prepare($sql);
+            return $stmt->execute([
+                ':client_id' => $clientId,
+                ':project_id' => $projectId
+            ]);
+        }
+        else{
+            $sql = "UPDATE tp_client SET c_firstname = :firstname, c_lastname = :lastname, c_email = :email WHERE c_id = :client_id";
+            $stmt = $this->conn->prepare($sql);
+            return $stmt->execute([
+                ':client_id' => $this->sanitize($clientId),
+                ':firstname' => $this->sanitize($firstname),
+                ':lastname' => $this->sanitize($lastname),
+                ':email' => $this->sanitize($email)
+            ]);
+        }
 
         if (!$result) {
             $_SESSION['toast'] = [
@@ -199,6 +209,20 @@ class ClientModel extends Core\GenericModel
         $stmt->execute([':email' => $email, ':client_id' => $clientId]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['count'] === 0;
+    }
+
+    /**
+     * Renvoie un tableau de tous les projets qui sont affectés à aucun client.
+     *
+     * @return array Un tableau de projets, chaque projet étant un tableau associatif
+     *               contenant les clés 'p_id' et 'p_name'.
+     */
+    public function getAllProjectsNoClient()
+    {
+        $sql = "SELECT p_id, p_name FROM tp_project WHERE c_id IS NULL";
+        $stmt = $this->conn->prepare($sql); 
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 }
