@@ -47,6 +47,11 @@ switch ($action) {
         $controller->addClient();
         break;
 
+    case 'showProjectDetails':
+        Authorization::requireRole([Role::ADMIN]);
+        $controller->showProjectDetails();
+        break;
+
     default:
         http_response_code(404);
         include __DIR__ . '/../../../public/errors/404.html';

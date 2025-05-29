@@ -151,7 +151,7 @@ class ProjectModel extends Core\GenericModel
      */
     public function getProjectById(int $projectId): ?array
     {
-        $sql = "SELECT p.* FROM tp_project p WHERE p_id = :project_id";
+        $sql = "SELECT p.*, c.c_firstname, c.c_lastname FROM tp_project p LEFT JOIN tp_client c ON p.c_id = c.c_id WHERE p_id = :project_id";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':project_id' => $projectId]);
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;

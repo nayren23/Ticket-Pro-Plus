@@ -143,6 +143,13 @@ class ProjectCont extends Core\GenericController
         header('Location: index.php?module=project&action=manageProject');
     }
 
+/**
+ * Orchestre à la vue d'afficher le formulaire de projet avec la liste des clients.
+ *
+ * @return void affiche le formulaire de projet avec la liste des clients si l'ID du projet est fourni,
+ *               avec un message d'erreur si le projet n'est pas trouvé ou si l'ID n'est pas fourni.
+ */
+
     public function addClient()
     {
          if (isset($_GET['projectId'])) {
@@ -156,6 +163,23 @@ class ProjectCont extends Core\GenericController
             } else {
                 echo "Project not found.";
             }
+        } else {
+            echo "Project ID not provided.";
+        }
+    }
+
+    /**
+     * Orchestre à la vue d'afficher les détails d'un projet.
+     *
+     * @return void affiche les détails du projet correspondant à l'ID donné si l'ID est fourni,
+     *               avec un message d'erreur si le projet n'est pas trouvé ou si l'ID n'est pas fourni.
+     */ 
+    public function showProjectDetails()
+    {
+        if (isset($_GET['projectId'])) {
+            $projectId = $_GET['projectId'];
+            $project = $this->model->getProjectById($projectId);
+            $this->view->showProjectDetails($project);
         } else {
             echo "Project ID not provided.";
         }
