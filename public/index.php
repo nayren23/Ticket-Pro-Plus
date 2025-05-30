@@ -20,6 +20,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+/* 
 $mailer = new \TicketProPlus\App\Core\Mail\Mailer();
 $toEmail = 'rayanchouchane23@gmail.com';
 $toName = 'Rayan';
@@ -31,3 +32,4 @@ if ($mailer->send($toEmail, $toName, $subject, $bodyHtml, $bodyText))
     echo 'Email envoyé avec succès !';
 else
     echo 'Erreur lors de l\'envoi de l\'email.';
+*/

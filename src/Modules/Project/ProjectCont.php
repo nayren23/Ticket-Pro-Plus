@@ -63,7 +63,7 @@ class ProjectCont extends Core\GenericController
      *
      * @return void
      */
-     public function showAddProjectForm()
+    public function showAddProjectForm()
     {
         $clients = $this->model->getAllClients();
         $this->view->showProjectForm(null, $clients);

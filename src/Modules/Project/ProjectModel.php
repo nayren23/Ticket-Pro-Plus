@@ -86,7 +86,7 @@ class ProjectModel extends Core\GenericModel
      */
     public function getProjectsWithPagination(int $offset, int $limit, $clientId = null): array
     {
-         $sql = "SELECT p.*, c.c_firstname, c.c_lastname, c.c_email
+         $sql = "SELECT p.*, c.c_firstname, c.c_lastname
             FROM tp_project p
             LEFT JOIN tp_client c ON p.c_id = c.c_id";
             
