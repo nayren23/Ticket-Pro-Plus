@@ -10,7 +10,7 @@ class UserCont extends Core\GenericController
     public function __construct()
     {
         $this->model = new UserModel();
-        $this->view = new UserView;
+        $this->view = new UserView();
     }
 
     public function showAddUserForm()
