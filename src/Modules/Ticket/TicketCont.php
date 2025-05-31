@@ -155,7 +155,7 @@ class TicketCont extends Core\GenericController
             ];
         }
 
-        header('Location: index.php?module=ticket&action=manageTicket');
+        header('Location: index.php?module=ticket&action=manageTicket&order=dateASC');
     }
 
     /**
