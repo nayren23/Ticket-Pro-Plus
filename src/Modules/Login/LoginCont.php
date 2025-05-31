@@ -4,7 +4,8 @@ namespace TicketProPlus\App\Modules\Login;
 
 use TicketProPlus\App\Core;
 
-
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
 class LoginCont extends Core\GenericController
 {
 
@@ -17,6 +18,12 @@ class LoginCont extends Core\GenericController
     public function showLoginForm()
     {
         $this->view->loginForm();
+    }
+
+    public function logout()
+    {
+        $this->model->logout();
+        header('Location: ?module=login&action=showLoginForm');
     }
 
 
@@ -33,16 +40,18 @@ class LoginCont extends Core\GenericController
     public function authenticate()
     {
         $user = $this->model->authenticate();
-
         if ($user) {
-            echo "Connexion Réussie";
-            header('Location: /dashboard');
-            exit;
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::SUCCESS->value,
+                'message' => 'Successfully connected!'
+            ];
+            header('Location: ?module=admin&action=stats');
         } else {
-            // Afficher un message d'erreur
-            $_SESSION['error'] = "Email ou mot de passe incorrect";
-            header('Location: /login');
-            exit;
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::ERROR->value,
+                'message' => 'Error login!'
+            ];
+            header('Location: ?module=login&action=showLoginForm');
         }
     }
 }
