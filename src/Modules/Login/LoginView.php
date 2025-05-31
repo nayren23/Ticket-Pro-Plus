@@ -24,8 +24,12 @@ class LoginView extends Core\GenericView
         <?php
         if (!isset($_SESSION["login"])) {
         ?>
+
+
             <div class="min-h-screen  flex items-center justify-center">
                 <div class="p-8 rounded-md shadow-md w-full max-w-md">
+                    <img class="mx-auto h-auto max-w-lg rounded-lg mb-16" src="./public/assets/images/Ticket_Pro_logo.png" alt="image description">
+
                     <form class="max-w-sm mx-auto" action="index.php?module=login&action=authenticate" method="POST">
 
                         <p class="text-lg font-medium text-gray-900 dark:text-white">Please Enter your Account details</p>
