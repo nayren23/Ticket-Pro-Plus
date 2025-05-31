@@ -25,13 +25,12 @@ class TicketCont extends Core\GenericController
     public function addTicket()
     {
         try {
-            if($this->model->addTicket()){
+            if ($this->model->addTicket()) {
                 $_SESSION['toast'] = [
-                'type' => Core\ToastType::SUCCESS->value,
-                'message' => 'Ticket successfully created!'
+                    'type' => Core\ToastType::SUCCESS->value,
+                    'message' => 'Ticket successfully created!'
                 ];
             };
-            
         } catch (\Exception $e) {
             $_SESSION['toast'] = [
                 'type' => Core\ToastType::ERROR->value,
@@ -45,7 +44,7 @@ class TicketCont extends Core\GenericController
      * Orchestre à la vue d'afficher le formulaire d'ajout d'un ticket.
      *
      * @return void
-     */ 
+     */
     public function showAddTicketForm()
     {
         $clients = $this->model->getAllClients();
@@ -58,7 +57,7 @@ class TicketCont extends Core\GenericController
      * Orchestre à la vue d'afficher la liste des tickets.
      *
      * @return void
-     */ 
+     */
     public function manageTicket()
     {
         $totalTickets = $this->model->getTotalTickets();
@@ -66,9 +65,9 @@ class TicketCont extends Core\GenericController
         $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $totalPages = ceil($totalTickets / $ticketsPerPage);
         $offset = ($currentPage - 1) * $ticketsPerPage;
-
-        $tickets = $this->model->getTicketsWithPagination($offset, $ticketsPerPage);
-        $this->view->manageTicket($tickets, $currentPage, $totalPages, $totalTickets);
+        $order = $_GET['order'];
+        $tickets = $this->model->getTicketsWithPagination($offset, $ticketsPerPage, $order);
+        $this->view->manageTicket($tickets, $currentPage, $totalPages, $totalTickets, $order);
     }
 
     /**
@@ -78,7 +77,7 @@ class TicketCont extends Core\GenericController
      *
      * @return void renvoie un code HTTP 200 si le ticket est supprimé, ou un code 500 
      * avec un message d'erreur en JSON si une exception est levée.
-     */ 
+     */
     public function deleteTicket()
     {
         try {
@@ -98,7 +97,7 @@ class TicketCont extends Core\GenericController
      * @return void affiche le formulaire de modification d'un ticket si l'ID du ticket est fourni,
      *               avec un toast de succès si le ticket est modifié, ou un toast d'erreur si
      *               une exception est levée.
-     */ 
+     */
     public function editTicket()
     {
         if (isset($_GET['id'])) {
@@ -108,7 +107,7 @@ class TicketCont extends Core\GenericController
             $clients = $this->model->getAllClients();
             $projects = $this->model->getAllProjects();
             $developers = $this->model->getAllDevelopers();
-            
+
             if ($ticket) {
                 $this->view->showTicketForm($ticket, $clients, $projects, $developers); // Pass the project data to the view($client);
             } else {
@@ -133,7 +132,7 @@ class TicketCont extends Core\GenericController
         $description = $_POST['description'];
         $dueDateRaw = $_POST['due_date'];
         $dateTime = \DateTime::createFromFormat('m/d/Y', $dueDateRaw);
-        $dueDate = $dateTime->format('Y-m-d') .' 00:00:00';
+        $dueDate = $dateTime->format('Y-m-d') . ' 00:00:00';
         $clientId = empty($_POST['clientId']) ? null : $_POST['clientId'];
         $projectId = $_POST['projectId'];
         $statusId = $_POST['statusId'];
@@ -143,7 +142,7 @@ class TicketCont extends Core\GenericController
         $developerId = empty($_POST['developerId']) ? null : $_POST['developerId'];
         $oldStatusValue = $_POST['oldStatusValue'];
 
-    
+
         $result = $this->model->updateTicket($ticketId, $description, $dueDate, $clientId, $projectId, $statusId, $timeClosed, $timeModified, $priorityId, $developerId, $oldStatusValue);
 
         if ($result) {
@@ -182,7 +181,7 @@ class TicketCont extends Core\GenericController
      * @return void affiche le formulaire de mise à jour d'un ticket, en
      *               sélectionnant les champs de formulaire en fonction de l'utilisateur
      *               courant.
-     */ 
+     */
     public function showUpdateForm()
     {
         $ticketId = $_GET['id'];
@@ -204,7 +203,7 @@ class TicketCont extends Core\GenericController
         $description = $_POST['description'];
         $result = $this->model->addUpdate($ticketId, $userId, $description);
 
-         if ($result) {
+        if ($result) {
             $_SESSION['toast'] = [
                 'type' => Core\ToastType::SUCCESS->value,
                 'message' => 'Update added successfully'
@@ -231,5 +230,22 @@ class TicketCont extends Core\GenericController
 
         $updates = $this->model->getUpdatesWithPagination($offset, $updatesPerPage, $ticketId);
         $this->view->viewUpdates($updates, $currentPage, $totalPages, $totalUpdates);
+    }
+
+    public function viewTicket()
+    {
+        if (isset($_GET['id'])) {
+            $ticketId = $_GET['id'];
+
+            $ticket = $this->model->getTicketById($ticketId);
+
+            if ($ticket) {
+                $this->view->viewTicket($ticket);
+            } else {
+                echo "Ticket not found.";
+            }
+        } else {
+            echo "Ticket ID not provided.";
+        }
     }
 }

@@ -24,26 +24,8 @@ class ClientView extends Core\GenericView
      */
     public function manageClient($clients, $currentPage, $totalPages, $totalClients)
     {
-        ?>
+?>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <div
-                class="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
-                <div>
-                </div>
-                <label for="table-search" class="sr-only">Search</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                        </svg>
-                    </div>
-                    <input type="text" id="table-search-clients"
-                        class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Search for clients">
-                </div>
-            </div>
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -80,7 +62,7 @@ class ClientView extends Core\GenericView
 
                             <td class="px-6 py-4">
                                 <div class="text-base font-semibold">
-                                        <?= $client["c_email"] ?>
+                                    <?= $client["c_email"] ?>
                                 </div>
                             </td>
 
@@ -94,7 +76,7 @@ class ClientView extends Core\GenericView
                                 </div>
                                 <div>
                                     <a data-client-id="<?= htmlspecialchars($client['c_id']); ?>" data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button">
-                                    Delete client
+                                        Delete client
                                     </a>
                                 </div>
                             </td>
@@ -161,10 +143,10 @@ class ClientView extends Core\GenericView
         </div>
 
 
-<?php
+    <?php
     }
 
-    
+
     /**
      * Affiche le formulaire pour ajouter ou modifier un client.
      * 
@@ -181,7 +163,7 @@ class ClientView extends Core\GenericView
         $firstnameValue = htmlspecialchars($clientToEdit['c_firstname'] ?? '');
         $lastnameValue = htmlspecialchars($clientToEdit['c_lastname'] ?? '');
         $emailValue = htmlspecialchars($clientToEdit['c_email'] ?? '');
-?>
+    ?>
         <title><?= $title ?></title>
         <div class="mt-6">
             <div class="contenir">
@@ -237,10 +219,59 @@ class ClientView extends Core\GenericView
                 </form>
             </div>
         </div>
-<?php
+    <?php
     }
 
+    public function viewClient($client)
+    {
+        $title = 'View a client | Ticket Pro +';
+        $heading = 'View a client';
+        $firstnameValue = htmlspecialchars($client['c_firstname']);
+        $lastnameValue = htmlspecialchars($client['c_lastname']);
+        $emailValue = htmlspecialchars($client['c_email']);
+    ?>
+        <title><?= $title ?></title>
+        <div class="mt-6">
+            <div class="contenir">
+                <form class="max-w-md mx-auto">
+                    <h2 class="text-4xl font-extrabold text-white dark:text-white mb-6"><?= $heading ?></h2>
 
+                    <div class="relative z-0 w-full mb-5 group">
+                        <input type="text" name="firstname" id="firstname"
+                            class="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer cursor-not-allowed"
+                            placeholder=" " value="<?= $firstnameValue ?>" disabled required />
+                        <label for="firstname"
+                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">First name</label>
+                    </div>
+                    <div class="relative z-0 w-full mb-5 group">
+                        <input type="text" name="lastname" id="lastname"
+                            class="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer cursor-not-allowed"
+                            placeholder=" " value="<?= $lastnameValue ?>" disabled required />
+                        <label for="lastname"
+                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Last name</label>
+                    </div>
+                    <div class="relative z-0 w-full mb-5 group">
+                        <input type="email" name="email" id="email"
+                            class="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer cursor-not-allowed"
+                            placeholder=" " value="<?= $emailValue ?>" disabled required />
+                        <label for="email"
+                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email
+                            address</label>
+                    </div>
 
+                    <td class="px-6 py-4">
+                        <div>
+                            <a href="?module=project&action=manageProject&clientId=<?= htmlspecialchars($client['c_id']); ?>"
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline block mb-2">
+                                View projects
+                            </a>
+                        </div>
+                    </td>
+
+                </form>
+            </div>
+        </div>
+<?php
+    }
 }
 ?>

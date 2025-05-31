@@ -79,7 +79,7 @@ class UserModel extends Core\GenericModel
 
     public function getAllUserManage()
     {
-        $sql = "SELECT u_id, u_login, u_firstname, u_lastname, u_email, u_profile_picture, u_email_verified, u_status, r_name from tp_user u join tp_role r on u.r_id = r.r_id; ";
+        $sql = "SELECT u_id, u_login, u_firstname, u_lastname, u_email, u_profile_picture, u_status, r_name from tp_user u join tp_role r on u.r_id = r.r_id; ";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -11,6 +11,11 @@ $action = $_GET['action'] ?? 'showLoginForm';
 
 switch ($action) {
     case 'showLoginForm':
+        if (!isset($_SESSION['user']['r_id']))
+            $isLogged = false;
+        else
+            $isLogged = true;
+        Authorization::requireRole([Role::VISITOR], null, $isLogged);
         $controller->showLoginForm();
         break;
 

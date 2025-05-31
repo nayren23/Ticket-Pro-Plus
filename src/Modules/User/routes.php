@@ -50,6 +50,11 @@ switch ($action) {
         $controller->updatePassword();
         break;
 
+    case 'viewUser':
+        Authorization::requireRole([Role::ADMIN, Role::DEVELOPER, Role::REPORTER]);
+        $controller->viewUser();
+        break;
+
     default:
         http_response_code(404);
         include __DIR__ . '/../../../public/errors/404.html';

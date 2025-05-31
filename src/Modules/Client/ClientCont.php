@@ -48,17 +48,16 @@ class ClientCont extends Core\GenericController
      *
      * @return void redirecte vers le formulaire d'ajout de client avec un toast de succès si le
      * client est créé, ou un toast d'erreur si une exception est levée.
-     */ 
+     */
     public function addClient()
     {
         try {
-            if($this->model->addClient()){
+            if ($this->model->addClient()) {
                 $_SESSION['toast'] = [
-                'type' => Core\ToastType::SUCCESS->value,
-                'message' => 'Client successfully created!'
+                    'type' => Core\ToastType::SUCCESS->value,
+                    'message' => 'Client successfully created!'
                 ];
             };
-            
         } catch (\Exception $e) {
             $_SESSION['toast'] = [
                 'type' => Core\ToastType::ERROR->value,
@@ -74,21 +73,21 @@ class ClientCont extends Core\GenericController
      * @return void affiche le formulaire de modification d'un client si l'ID du client est fourni,
      *               avec un toast de succès si le client est modifié, ou un toast d'erreur si
      *               une exception est levée.
-     */ 
+     */
     public function editClient()
     {
         if (isset($_GET['id'])) {
             $clientId = $_GET['id'];
 
             $client = $this->model->getClientById($clientId);
-            
+
             if ($client) {
                 $this->view->showClientForm($client);
             } else {
-                echo "User not found.";
+                echo "Client not found.";
             }
         } else {
-            echo "User ID not provided.";
+            echo "Client ID not provided.";
         }
     }
 
@@ -98,21 +97,21 @@ class ClientCont extends Core\GenericController
      * @return void affiche le formulaire d'ajout de projet pour le client dont l'ID est fourni,
      *               avec un toast de succès si le projet est créé, ou un toast d'erreur si
      *               une exception est levée.
-     */ 
+     */
     public function addProject()
     {
-         if (isset($_GET['clientId'])) {
+        if (isset($_GET['clientId'])) {
             $clientId = $_GET['clientId'];
 
             $client = $this->model->getClientById($clientId);
-            
+
             if ($client) {
-                $this->view->showClientForm($client, $this->model->getAllProjectsNoClient()); 
+                $this->view->showClientForm($client, $this->model->getAllProjectsNoClient());
             } else {
-                echo "User not found.";
+                echo "Client not found.";
             }
         } else {
-            echo "User ID not provided.";
+            echo "Client ID not provided.";
         }
     }
 
@@ -121,7 +120,7 @@ class ClientCont extends Core\GenericController
      *
      * @return void redirige vers la page de gestion des clients avec un toast de succès si le
      * client est mis à jour, ou un toast d'erreur si une exception est levée.
-     */ 
+     */
     public function updateClient()
     {
         $clientId = $_POST['id'];
@@ -163,6 +162,20 @@ class ClientCont extends Core\GenericController
         }
     }
 
+    public function viewClient()
+    {
+        if (isset($_GET['id'])) {
+            $clientId = $_GET['id'];
 
+            $client = $this->model->getClientById($clientId);
 
+            if ($client) {
+                $this->view->viewClient($client);
+            } else {
+                echo "Client not found.";
+            }
+        } else {
+            echo "Client ID not provided.";
+        }
+    }
 }

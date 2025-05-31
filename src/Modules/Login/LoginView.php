@@ -22,8 +22,8 @@ class LoginView extends Core\GenericView
         <?php
         if (!isset($_SESSION["login"])) {
         ?>
-            <div class="loginPage">
-                <div>
+            <div class="min-h-screen  flex items-center justify-center">
+                <div class="p-8 rounded-md shadow-md w-full max-w-md">
                     <form class="max-w-sm mx-auto" action="index.php?module=login&action=authenticate" method="POST">
 
                         <p class="text-lg font-medium text-gray-900 dark:text-white">Please Enter your Account details</p>

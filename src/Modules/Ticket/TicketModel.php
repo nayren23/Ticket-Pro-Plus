@@ -15,7 +15,7 @@ class TicketModel extends Core\GenericModel
     public function getAllClients()
     {
         $sql = "SELECT c_id, c_firstname, c_lastname FROM tp_client";
-        $stmt = $this->conn->prepare($sql); 
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -30,7 +30,7 @@ class TicketModel extends Core\GenericModel
     public function getAllProjects()
     {
         $sql = "SELECT * FROM tp_project";
-        $stmt = $this->conn->prepare($sql); 
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -38,7 +38,7 @@ class TicketModel extends Core\GenericModel
     public function getAllDevelopers()
     {
         $sql = "SELECT u_id, u_firstname, u_lastname FROM tp_user WHERE r_id = '2'";
-        $stmt = $this->conn->prepare($sql); 
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -57,7 +57,7 @@ class TicketModel extends Core\GenericModel
             $creationDate = date('Y-m-d H:i:s');
             $dueDateRaw = $this->sanitize($_POST['due_date']);
             $dateTime = \DateTime::createFromFormat('m/d/Y', $dueDateRaw);
-            $dueDate = $dateTime->format('Y-m-d') .' 00:00:00';
+            $dueDate = $dateTime->format('Y-m-d') . ' 00:00:00';
             $clientId = empty($_POST['clientId']) ? null : $this->sanitize($_POST['clientId']);
             $projectId = $this->sanitize($_POST['projectId']);
             $statusId = $this->sanitize($_POST['statusId']);
@@ -68,7 +68,7 @@ class TicketModel extends Core\GenericModel
             if (empty($description)) {
                 throw new \Exception('Description is required.');
             }
-            
+
             $sql = "INSERT INTO tp_ticket (t_description, t_creation, t_due_date, t_timestamp_modification, t_timestamp_closed, c_id, pty_id, s_id, p_id, u_id) VALUES (:description, :creation, :due_date, :timeModification, :timeClosed, :client_id, :priority_id, :status_id, :project_id, :developer_id)";
             $statement = $this->conn->prepare($sql);
 
@@ -127,7 +127,7 @@ class TicketModel extends Core\GenericModel
      *               't_timestamp_modification', 't_timestamp_closed', 'c_id', 'c_firstname',
      *               'c_lastname', 'pty_id', 'pty_name', 'p_id', 'p_name', 's_id', 's_name'.
      */
-    public function getTicketsWithPagination(int $offset, int $limit): array
+    public function getTicketsWithPagination(int $offset, int $limit, $order): array
     {
         $sql = "SELECT t.*, c.c_firstname, c.c_lastname, pty.pty_name, p.p_name, s.s_name, u.u_firstname, u.u_lastname
                 FROM tp_ticket t
@@ -135,8 +135,35 @@ class TicketModel extends Core\GenericModel
                 LEFT JOIN tp_project p ON t.p_id = p.p_id
                 LEFT JOIN tp_status s ON t.s_id = s.s_id
                 LEFT JOIN tp_priority pty ON t.pty_id = pty.pty_id
-                LEFT JOIN tp_user u ON t.u_id = u.u_id
-                LIMIT :limit OFFSET :offset";
+                LEFT JOIN tp_user u ON t.u_id = u.u_id";
+
+        switch ($order) {
+            case "dateASC":
+                $sql .= " ORDER BY t.t_creation ASC";
+                break;
+
+            case "dateDESC":
+                $sql .= " ORDER BY t.t_creation DESC";
+                break;
+
+            case "statusASC":
+                $sql .= " ORDER BY t.s_id ASC";
+                break;
+
+            case "statusDESC":
+                $sql .= " ORDER BY t.s_id DESC";
+                break;
+
+            case "prioASC":
+                $sql .= " ORDER BY t.pty_id ASC";
+                break;
+
+            case "prioDESC":
+                $sql .= " ORDER BY t.pty_id DESC";
+                break;
+        }
+
+        $sql .= " LIMIT :limit OFFSET :offset";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
@@ -183,24 +210,24 @@ class TicketModel extends Core\GenericModel
     }
 
     /**
-    * Met à jour un ticket existant avec les détails fournis.
-    *
-    * @param int $ticketId L'ID du ticket à mettre à jour.
-    * @param string $description La description mise à jour du ticket.
-    * @param string $dueDate La nouvelle date d'échéance du ticket.
-    * @param int|null $clientId L'ID du client associé au ticket, ou null.
-    * @param int $projectId L'ID du projet lié au ticket.
-    * @param int $statusId L'ID du statut actuel du ticket.
-    * @param string|null $timeClosed La date et l'heure de clôture du ticket, ou null.
-    * @param string $timeModified La date et l'heure de la dernière modification du ticket.
-    * @param int $priorityId L'ID de la priorité assignée au ticket.
-    * @param int|null $developerId L'ID du développeur assigné au ticket, ou null.
-    *
-    * @return bool Renvoie true si la mise à jour est réussie, false sinon.
-    */
-    public function updateTicket($ticketId, $description, $dueDate, $clientId, $projectId, $statusId, $timeClosed, $timeModified, $priorityId, $developerId, $oldStatusValue) : bool
+     * Met à jour un ticket existant avec les détails fournis.
+     *
+     * @param int $ticketId L'ID du ticket à mettre à jour.
+     * @param string $description La description mise à jour du ticket.
+     * @param string $dueDate La nouvelle date d'échéance du ticket.
+     * @param int|null $clientId L'ID du client associé au ticket, ou null.
+     * @param int $projectId L'ID du projet lié au ticket.
+     * @param int $statusId L'ID du statut actuel du ticket.
+     * @param string|null $timeClosed La date et l'heure de clôture du ticket, ou null.
+     * @param string $timeModified La date et l'heure de la dernière modification du ticket.
+     * @param int $priorityId L'ID de la priorité assignée au ticket.
+     * @param int|null $developerId L'ID du développeur assigné au ticket, ou null.
+     *
+     * @return bool Renvoie true si la mise à jour est réussie, false sinon.
+     */
+    public function updateTicket($ticketId, $description, $dueDate, $clientId, $projectId, $statusId, $timeClosed, $timeModified, $priorityId, $developerId, $oldStatusValue): bool
     {
-        if($oldStatusValue != $statusId){
+        if ($oldStatusValue != $statusId) {
             $this->sendMailNotification($clientId, $statusId, $ticketId);
         }
 
@@ -228,7 +255,7 @@ class TicketModel extends Core\GenericModel
             ':developer_id' => $developerId,
             ':ticket_id' => $ticketId
         ]);
-        
+
 
         if (!$result) {
             $_SESSION['toast'] = [
@@ -253,7 +280,7 @@ class TicketModel extends Core\GenericModel
      *               'c_lastname', 'pty_id', 'pty_name', 'p_id', 'p_name', 's_id', 's_name',
      *               'u_id', 'u_firstname', 'u_lastname'.
      */
-    public function getTicketsByUserId($userId, int $offset, int $limit) : array 
+    public function getTicketsByUserId($userId, int $offset, int $limit): array
     {
         $sql = "SELECT t.*, c.c_firstname, c.c_lastname, pty.pty_name, p.p_name, s.s_name, u.u_firstname, u.u_lastname
                 FROM tp_ticket t
@@ -287,7 +314,7 @@ class TicketModel extends Core\GenericModel
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['total'] ?? 0;
     }
-    
+
     /**
      * Ajoute un commentaire à un ticket.
      *
@@ -309,7 +336,7 @@ class TicketModel extends Core\GenericModel
             ':content' => $content,
             ':time' => $time
         ]);
-    
+
         // Met à jour le champ t_timestamp_modification du ticket
         if ($result) {
             $updateSql = "UPDATE tp_ticket SET t_timestamp_modification = :time WHERE t_id = :ticket_id";
@@ -319,7 +346,7 @@ class TicketModel extends Core\GenericModel
                 ':ticket_id' => $ticketId
             ]);
         }
-    
+
         return $result;
     }
 
@@ -391,5 +418,3 @@ class TicketModel extends Core\GenericModel
         }
     }
 }
-
-    

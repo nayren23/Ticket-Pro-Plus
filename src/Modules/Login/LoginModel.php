@@ -32,7 +32,6 @@ class LoginModel extends Core\GenericModel
                     $_SESSION['user']['r_id'] = $user['r_id'];
                     $_SESSION['user']['u_email'] = $user['u_email'];
                     $_SESSION['user']['u_id'] = $user['u_id'];
-                    var_dump($_SESSION['user']);
                     return true;
                 }
             } else {

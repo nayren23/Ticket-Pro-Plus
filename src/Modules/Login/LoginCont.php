@@ -39,18 +39,18 @@ class LoginCont extends Core\GenericController
     public function authenticate()
     {
         $user = $this->model->authenticate();
-
         if ($user) {
-            echo "Connexion Réussie<br> Il faudra rediriger sur le home";
-            //header('Location: /user');
-            exit;
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::SUCCESS->value,
+                'message' => 'Successfully connected!'
+            ];
+            header('Location: ?module=admin&action=stats');
         } else {
-            // Afficher un message d'erreur
-            echo "Erreur COnnexion";
-
-            $_SESSION['error'] = "Email ou mot de passe incorrect";
-            //header('Location: /login');
-            exit;
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::ERROR->value,
+                'message' => 'Error login!'
+            ];
+            header('Location: ?module=login&action=showLoginForm');
         }
     }
 }

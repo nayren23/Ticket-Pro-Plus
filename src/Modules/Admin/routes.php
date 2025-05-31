@@ -11,8 +11,12 @@ $action = $_GET['action'] ?? 'stats'; #TODO à changer
 
 switch ($action) {
     case 'stats':
-        Authorization::requireRole([Role::ADMIN]);
+        Authorization::requireRole([Role::ADMIN, Role::DEVELOPER, Role::REPORTER]);
         $controller->stats();
+        break;
+
+    case 'search':
+        $controller->globalSearch();
         break;
 
     default:

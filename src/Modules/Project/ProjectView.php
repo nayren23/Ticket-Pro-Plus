@@ -22,26 +22,8 @@ class ProjectView extends Core\GenericView
      */
     public function manageProject($projects, $currentPage, $totalPages, $totalProjects)
     {
-    ?>
+?>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <div
-                class="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
-                <div>
-                </div>
-                <label for="table-search" class="sr-only">Search</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                        </svg>
-                    </div>
-                    <input type="text" id="table-search-projects"
-                        class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Search for projects">
-                </div>
-            </div>
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -104,7 +86,7 @@ class ProjectView extends Core\GenericView
                                 </div>
                                 <div>
                                     <a data-project-id="<?= htmlspecialchars($project['p_id']); ?>" data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button">
-                                    Delete project
+                                        Delete project
                                     </a>
                                 </div>
                             </td>
@@ -200,7 +182,7 @@ class ProjectView extends Core\GenericView
         $closedValue = htmlspecialchars($projectToEdit['p_closed'] ?? '');
         $clientId = htmlspecialchars($projectToEdit['c_id'] ?? '');
 
-?>
+    ?>
         <title> <?= $title ?> </title>
         <div class="mt-6">
             <div class="contenir">
@@ -214,7 +196,7 @@ class ProjectView extends Core\GenericView
                     <div class="relative z-0 w-full mb-5 group">
                         <input type="text" name="name" id="name"
                             class="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer <?= isset($projectToEdit) && isset($clients) ? 'cursor-not-allowed' : '' ?>"
-                            placeholder=" " value="<?= $nameValue ?>" <?= isset($projectToEdit) && isset($clients) ? 'readonly' : '' ?> required/>
+                            placeholder=" " value="<?= $nameValue ?>" <?= isset($projectToEdit) && isset($clients) ? 'readonly' : '' ?> required />
                         <label for="name"
                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Name</label>
                     </div>
@@ -225,14 +207,14 @@ class ProjectView extends Core\GenericView
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 <?= isset($projectToEdit) && isset($clients) ? 'cursor-not-allowed' : '' ?>"
                             placeholder="Leave a description of the project" <?= isset($projectToEdit) && isset($clients) ? 'readonly' : '' ?>><?= $descriptionValue ?></textarea>
                     </div>
-                    
+
 
                     <div class="flex items-end gap-4 mb-5">
                         <div class="relative max-w-xs w-2/3 text-sm font-medium text-gray-500 dark:text-gray-400">
                             <label class="block mb-1">Due date</label>
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 mt-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                 </svg>
                             </div>
                             <input id="datepicker-autohide" datepicker datepicker-autohide type="text"
@@ -247,7 +229,7 @@ class ProjectView extends Core\GenericView
                             <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600 <?= isset($projectToEdit) && isset($clients) ? 'cursor-not-allowed' : '' ?>"></div>
                         </label>
                     </div>
-                    
+
                     <div class="max-w-md mx-auto mb-5" <?= $clients === null ? 'hidden' : '' ?>>
                         <label for="clientId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Associate a client</label>
                         <select id="clientId" name="clientId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -297,7 +279,7 @@ class ProjectView extends Core\GenericView
         $clientFirstName = htmlspecialchars($project['c_firstname'] ?? '');
         $clientLastName = htmlspecialchars($project['c_lastname'] ?? '');
 
-?>
+    ?>
         <title> <?= $title ?> </title>
         <div class="mt-6">
             <div class="contenir">
@@ -318,14 +300,14 @@ class ProjectView extends Core\GenericView
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-not-allowed"
                             placeholder="Leave a description of the project" disabled><?= $descriptionValue ?></textarea>
                     </div>
-                    
+
 
                     <div class="flex items-end gap-4 mb-5">
                         <div class="relative max-w-xs w-2/3 text-sm font-medium text-gray-500 dark:text-gray-400">
                             <label class="block mb-1">Due date</label>
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 mt-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                 </svg>
                             </div>
                             <input id="datepicker-autohide" datepicker datepicker-autohide type="text"
@@ -340,7 +322,7 @@ class ProjectView extends Core\GenericView
                             <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600 cursor-not-allowed"></div>
                         </label>
                     </div>
-                    
+
                     <label for="clientId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Associate a client</label>
                     <select id="clientId" name="clientId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-not-allowed" disabled>
                         <option value="" selected>
@@ -351,8 +333,7 @@ class ProjectView extends Core\GenericView
                 </form>
             </div>
         </div>
-    <?php
+<?php
     }
-
 }
 ?>

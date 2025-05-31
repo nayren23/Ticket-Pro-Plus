@@ -21,10 +21,10 @@ class UserCont extends Core\GenericController
     public function addUser()
     {
         try {
-            if($this->model->addUser()){
+            if ($this->model->addUser()) {
                 $_SESSION['toast'] = [
-                'type' => Core\ToastType::SUCCESS->value,
-                'message' => 'User successfully created !'
+                    'type' => Core\ToastType::SUCCESS->value,
+                    'message' => 'User successfully created !'
                 ];
             }
         } catch (\Exception $e) {
@@ -136,5 +136,22 @@ class UserCont extends Core\GenericController
             echo "User ID not provided.";
         }
         header('Location: index.php?module=user&action=manageUser');
+    }
+
+    public function viewUser()
+    {
+        if (isset($_GET['id'])) {
+            $userId = $_GET['id'];
+
+            $user = $this->model->getUserById($userId);
+
+            if ($user) {
+                $this->view->viewUser($user);
+            } else {
+                echo "User not found.";
+            }
+        } else {
+            echo "User ID not provided.";
+        }
     }
 }

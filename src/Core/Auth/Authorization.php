@@ -35,9 +35,9 @@ class Authorization
      * Si null, une réponse 403 est envoyée.
      * @return void
      */
-    public static function requireRole(array $requiredRoles, ?string $redirectUrl = null): void
+    public static function requireRole(array $requiredRoles, ?string $redirectUrl = null, ?bool $isLogged = null): void
     {
-        if (!self::hasRole($requiredRoles)) {
+        if (!self::hasRole($requiredRoles) && $isLogged) {
             if ($redirectUrl) {
                 header("Location: " . $redirectUrl);
                 exit;

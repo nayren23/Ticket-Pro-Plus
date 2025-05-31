@@ -13,7 +13,6 @@ class NavbarCont extends Core\GenericController
     public function __construct()
     {
         $this->userModel = new UserModel();
-        //  $this->model = new UserModel();
         $this->view = new NavbarView;
     }
 

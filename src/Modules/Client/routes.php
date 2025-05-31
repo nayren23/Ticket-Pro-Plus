@@ -19,7 +19,7 @@ switch ($action) {
         Authorization::requireRole([Role::ADMIN]);
         $controller->addClient();
         break;
-    
+
     case 'showAddClientForm':
         Authorization::requireRole([Role::ADMIN]);
         $controller->showAddClientForm();
@@ -45,12 +45,15 @@ switch ($action) {
         Authorization::requireRole([Role::ADMIN]);
         $controller->addProject();
         break;
-        
- 
+
+    case 'viewClient':
+        Authorization::requireRole([Role::ADMIN, Role::DEVELOPER, Role::REPORTER]);
+        $controller->viewClient();
+        break;
+
+
     default:
         http_response_code(404);
         include __DIR__ . '/../../../public/errors/404.html';
         break;
 }
-
-?>

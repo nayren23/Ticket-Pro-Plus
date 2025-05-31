@@ -41,26 +41,19 @@ use TicketProPlus\App\Core\Auth\Authorization;
 <body>
 
     <?php
-
-
     if (Authorization::hasRole([Role::ADMIN, Role::DEVELOPER, Role::REPORTER])) {
         $navbar = new NavbarComp\NavbarCont();
         $navbar->displayNavbar();
     }
     $router = new Core\Router();
-
     ?>
-
 
     <script src="./src/Modules/User/UserScript.js"></script>
     <script src="./src/Modules/Client/ClientScript.js"></script>
     <script src="./src/Modules/Project/ProjectScript.js"></script>
     <script src="./src/Modules/Ticket/TicketScript.js"></script>
     <script src="./public/assets/js/passwordValidation.js"></script>
-
     <script src="./src/Core/utils.js"></script>
-
-
 </body>
 
 </html>
