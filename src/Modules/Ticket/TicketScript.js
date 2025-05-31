@@ -51,3 +51,17 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('description-modal').classList.add('hidden');
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.view-commentary-btn').forEach(function (btns) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const desc = this.getAttribute('data-commentary');
+            document.getElementById('commentary-modal-content').textContent = desc || 'No description';
+            document.getElementById('commentary-modal').classList.remove('hidden');
+        });
+    });
+    document.getElementById('close-commentary-modal').addEventListener('click', function () {
+        document.getElementById('commentary-modal').classList.add('hidden');
+    });
+});

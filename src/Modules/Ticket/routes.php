@@ -40,7 +40,27 @@ switch ($action) {
         Authorization::requireRole([Role::ADMIN, Role::REPORTER]);
         $controller->updateTicket();
         break;
+
+    case 'viewMyTickets':
+        Authorization::requireRole([Role::DEVELOPER]);
+        $controller->viewMyTickets();
+        break;
     
+    case 'showUpdateForm':
+        Authorization::requireRole([Role::DEVELOPER]);
+        $controller->showUpdateForm();
+        break;
+
+    case 'addUpdate':
+        Authorization::requireRole([Role::DEVELOPER]);
+        $controller->addUpdate();
+        break;
+
+    case 'viewUpdates':
+        Authorization::requireRole([Role::ADMIN, Role::REPORTER, Role::DEVELOPER]);
+        $controller->viewUpdates();
+        break;
+
     default:
         http_response_code(404);
         include __DIR__ . '/../../../public/errors/404.html';

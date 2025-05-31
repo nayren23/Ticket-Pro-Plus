@@ -198,9 +198,12 @@ class TicketModel extends Core\GenericModel
     *
     * @return bool Renvoie true si la mise à jour est réussie, false sinon.
     */
-    public function updateTicket($ticketId, $description, $dueDate, $clientId, $projectId, $statusId, $timeClosed, $timeModified, $priorityId, $developerId) : bool
+    public function updateTicket($ticketId, $description, $dueDate, $clientId, $projectId, $statusId, $timeClosed, $timeModified, $priorityId, $developerId, $oldStatusValue) : bool
     {
-        
+        if($oldStatusValue != $statusId){
+            $this->sendMailNotification($clientId, $statusId, $ticketId);
+        }
+
         $sql = "UPDATE tp_ticket
                 SET t_description = :description, 
                     t_due_date = :due_date, 
@@ -236,4 +239,157 @@ class TicketModel extends Core\GenericModel
         }
         return true;
     }
+
+    /**
+     * Renvoie un tableau de tickets paginé, appartenant à l'utilisateur donné.
+     *
+     * @param int $userId l'ID de l'utilisateur.
+     * @param int $offset Le numéro du premier ticket à retourner.
+     * @param int $limit Le nombre maximum de tickets à retourner.
+     *
+     * @return array Un tableau de tickets, chaque ticket étant un tableau associatif
+     *               contenant les clés 't_id', 't_description', 't_creation', 't_due_date',
+     *               't_timestamp_modification', 't_timestamp_closed', 'c_id', 'c_firstname',
+     *               'c_lastname', 'pty_id', 'pty_name', 'p_id', 'p_name', 's_id', 's_name',
+     *               'u_id', 'u_firstname', 'u_lastname'.
+     */
+    public function getTicketsByUserId($userId, int $offset, int $limit) : array 
+    {
+        $sql = "SELECT t.*, c.c_firstname, c.c_lastname, pty.pty_name, p.p_name, s.s_name, u.u_firstname, u.u_lastname
+                FROM tp_ticket t
+                LEFT JOIN tp_client c ON t.c_id = c.c_id
+                LEFT JOIN tp_project p ON t.p_id = p.p_id
+                LEFT JOIN tp_status s ON t.s_id = s.s_id
+                LEFT JOIN tp_priority pty ON t.pty_id = pty.pty_id
+                LEFT JOIN tp_user u ON t.u_id = u.u_id
+                WHERE t.u_id = :user_id
+                LIMIT :limit OFFSET :offset";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Renvoie le nombre total de tickets appartenant à l'utilisateur donné.
+     *
+     * @param int $userId l'ID de l'utilisateur.
+     *
+     * @return int le nombre total de tickets.
+     */
+    public function getTotalTicketsByUserId($userId): int
+    {
+        $sql = "SELECT COUNT(*) AS total FROM tp_ticket WHERE u_id = :user_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':user_id' => $userId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
+    }
+    
+    /**
+     * Ajoute un commentaire à un ticket.
+     *
+     * @param int $ticketId L'ID du ticket.
+     * @param int $userId L'ID de l'utilisateur qui écrit le commentaire.
+     * @param string $description Le commentaire à ajouter.
+     *
+     * @return bool Renvoie true si le commentaire est ajouté, false sinon.
+     */
+    public function addUpdate($ticketId, $userId, $description)
+    {
+        $sql = "INSERT INTO tp_work (u_id, t_id, w_commentary, w_timestamp_modification) VALUES (:user_id, :ticket_id, :content, :time)";
+        $time = date('Y-m-d H:i:s');
+        $content = $this->sanitize($description);
+        $stmt = $this->conn->prepare($sql);
+        $result = $stmt->execute([
+            ':user_id' => $userId,
+            ':ticket_id' => $ticketId,
+            ':content' => $content,
+            ':time' => $time
+        ]);
+    
+        // Met à jour le champ t_timestamp_modification du ticket
+        if ($result) {
+            $updateSql = "UPDATE tp_ticket SET t_timestamp_modification = :time WHERE t_id = :ticket_id";
+            $updateStmt = $this->conn->prepare($updateSql);
+            $updateStmt->execute([
+                ':time' => $time,
+                ':ticket_id' => $ticketId
+            ]);
+        }
+    
+        return $result;
+    }
+
+    /**
+     * Renvoie le nombre total de mises à jour d'un ticket.
+     *
+     * @param int $ticketId l'ID du ticket.
+     *
+     * @return int le nombre total de mises à jour.
+     */
+    public function getTotalUpdates(int $ticketId): int
+    {
+        $sql = "SELECT COUNT(*) AS total FROM tp_work WHERE t_id = :ticket_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':ticket_id' => $ticketId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
+    }
+
+    /**
+     * Renvoie les mises à jour d'un ticket, paginées.
+     *
+     * @param int $offset Le numéro du premier commentaire à retourner.
+     * @param int $limit Le nombre maximum de commentaires à retourner.
+     * @param int $ticketId L'ID du ticket.
+     *
+     * @return array Un tableau de mises à jour, chaque mise à jour étant un tableau associatif
+     *               contenant les clés 'w_id', 'u_id', 't_id', 'w_commentary', 'w_timestamp_modification',
+     *               'u_firstname', 'u_lastname'.
+     */
+    public function getUpdatesWithPagination(int $offset, int $limit, int $ticketId): array
+    {
+        $sql = "SELECT w.*, u.u_firstname, u.u_lastname
+                FROM tp_work w
+                LEFT JOIN tp_user u ON w.u_id = u.u_id
+                WHERE w.t_id = :ticket_id
+                LIMIT :limit OFFSET :offset";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':ticket_id', $ticketId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function sendMailNotification($clientId, $statusId, $ticketId)
+    {
+        $sql = "SELECT c.c_email, c.c_firstname, c.c_lastname, s.s_name
+                FROM tp_client c
+                JOIN tp_ticket t ON c.c_id = t.c_id
+                JOIN tp_status s ON t.s_id = s.s_id
+                WHERE c.c_id = :client_id AND t.t_id = :ticket_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':client_id' => $clientId, ':ticket_id' => $ticketId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            $toEmail = $result['c_email'];
+            $toName = $result['c_firstname'];
+            $toName .= ' ' . $result['c_lastname'];
+            $statusName = $result['s_name'];
+
+            // Envoi de l'email
+            $mailer = new \TicketProPlus\App\Core\Mail\Mailer();
+            $subject = 'Your ticket status has been updated';
+            $bodyHtml = '<p>Hello ' . $toName . ',</p><p>Your ticket status has been updated to <strong>' . $statusName . '</strong>.</p>';
+            $bodyText = 'Hello ' . $toName . ', Your ticket status has been updated to ' . $statusName . '.';
+            $mailer->send($toEmail, $toName, $subject, $bodyHtml, $bodyText);
+        }
+    }
 }
+
+    

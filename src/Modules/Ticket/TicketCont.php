@@ -141,8 +141,10 @@ class TicketCont extends Core\GenericController
         $timeModified = date('Y-m-d H:i:s');
         $priorityId = $_POST['priorityId'];
         $developerId = empty($_POST['developerId']) ? null : $_POST['developerId'];
+        $oldStatusValue = $_POST['oldStatusValue'];
+
     
-        $result = $this->model->updateTicket($ticketId, $description, $dueDate, $clientId, $projectId, $statusId, $timeClosed, $timeModified, $priorityId, $developerId);
+        $result = $this->model->updateTicket($ticketId, $description, $dueDate, $clientId, $projectId, $statusId, $timeClosed, $timeModified, $priorityId, $developerId, $oldStatusValue);
 
         if ($result) {
             $_SESSION['toast'] = [
@@ -152,5 +154,82 @@ class TicketCont extends Core\GenericController
         }
 
         header('Location: index.php?module=ticket&action=manageTicket');
+    }
+
+    /**
+     * Affiche la liste des tickets affectés à l'utilisateur courant.
+     *
+     * @return void affiche la liste des tickets affectés à l'utilisateur courant, en
+     *               paginant les résultats.
+     */
+    public function viewMyTickets()
+    {
+        $userId = $_SESSION['user']['u_id'];
+
+        $totalTickets = $this->model->getTotalTicketsByUserId($userId);
+        $ticketsPerPage = 10;
+        $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+        $totalPages = ceil($totalTickets / $ticketsPerPage);
+        $offset = ($currentPage - 1) * $ticketsPerPage;
+        $tickets = $this->model->getTicketsByUserId($userId, $offset, $ticketsPerPage);
+
+        $this->view->viewMyTickets($tickets, $currentPage, $totalPages, $totalTickets);
+    }
+
+    /**
+     * Affiche le formulaire de mise à jour d'un ticket.
+     *
+     * @return void affiche le formulaire de mise à jour d'un ticket, en
+     *               sélectionnant les champs de formulaire en fonction de l'utilisateur
+     *               courant.
+     */ 
+    public function showUpdateForm()
+    {
+        $ticketId = $_GET['id'];
+        $userId = $_SESSION['user']['u_id'];
+        $this->view->showUpdateForm($userId, $ticketId);
+    }
+
+    /**
+     * Ajoute une mise à jour à un ticket.
+     *
+     * @return void redirige vers la page affichant les tickets de l'utilisateur
+     *               après l'ajout de la mise à jour.
+     */
+
+    public function addUpdate()
+    {
+        $ticketId = $_POST['ticketId'];
+        $userId = $_POST['userId'];
+        $description = $_POST['description'];
+        $result = $this->model->addUpdate($ticketId, $userId, $description);
+
+         if ($result) {
+            $_SESSION['toast'] = [
+                'type' => Core\ToastType::SUCCESS->value,
+                'message' => 'Update added successfully'
+            ];
+        }
+
+        header('Location: index.php?module=ticket&action=viewMyTickets');
+    }
+
+    /**
+     * Affiche les mises à jour d'un ticket spécifique avec pagination.
+     *
+     * @return void affiche les mises à jour du ticket, en paginant les résultats par 10 mises à jour par page.
+     */
+
+    public function viewUpdates()
+    {
+        $ticketId = $_GET['ticketId'];
+        $totalUpdates = $this->model->getTotalUpdates($ticketId);
+        $updatesPerPage = 10;
+        $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+        $totalPages = ceil($totalUpdates / $updatesPerPage);
+        $offset = ($currentPage - 1) * $updatesPerPage;
+
+        $updates = $this->model->getUpdatesWithPagination($offset, $updatesPerPage, $ticketId);
+        $this->view->viewUpdates($updates, $currentPage, $totalPages, $totalUpdates);
     }
 }

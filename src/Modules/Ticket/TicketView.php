@@ -53,6 +53,10 @@ class TicketView extends Core\GenericView
                         <input type="hidden" name="id" value="<?= htmlspecialchars($ticketToEdit['t_id']) ?>">
                     <?php endif; ?>
 
+                    <?php if ($ticketToEdit !== null): ?>
+                        <input type="hidden" name="oldStatusValue" value="<?= $statusValue ?>">
+                    <?php endif; ?>
+
                     <div class="relative z-0 w-full mb-5 group">
                         <label for="description" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
                         <textarea id="description" name="description" rows="4"
@@ -147,6 +151,14 @@ class TicketView extends Core\GenericView
     <?php
     }
 
+    /**
+     * Gère l'affichage de la liste des tickets avec des boutons pour éditer, supprimer et afficher les mises à jour.
+     *
+     * @param array $tickets La liste des tickets.
+     * @param int $currentPage Le numéro de la page actuelle.
+     * @param int $totalPages Le nombre total de pages.
+     * @param int $totalTickets Le nombre total de tickets.
+     */
     public function manageTicket($tickets, $currentPage, $totalPages, $totalTickets)
     {
     ?>
@@ -357,5 +369,336 @@ class TicketView extends Core\GenericView
     <?php
     }
 
+    public function viewMyTickets($tickets, $currentPage, $totalPages, $totalTickets)
+        {
+    ?>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div
+                class="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+                <div>
+                </div>
+                <label for="table-search" class="sr-only">Search</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="table-search-tickets"
+                        class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Search for tickets">
+                </div>
+            </div>
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+
+                        <th scope="col" class="px-6 py-3">
+                            Ticket ID
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Creation Date
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Due Date
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Last Update
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Priority
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Status
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Assigned Developer
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Associated Project
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Assigned Client
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Action
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($tickets as $ticket) {
+                    ?>
+                        <tr
+                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+                            <td class="px-6 py-4">
+                                <?= $ticket["t_id"] ?>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <?= date('Y-m-d H:i:s', strtotime($ticket["t_creation"])) ?>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <?= date('Y-m-d H:i:s', strtotime($ticket["t_due_date"])) ?>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <?= date('Y-m-d H:i:s', strtotime($ticket["t_timestamp_modification"])) ?>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <div class="flex items-center justify-center">
+                                    <?php
+                                        $priorityColors = [
+                                            1 => 'bg-green-500',   // Low
+                                            2 => 'bg-yellow-400',  // Medium
+                                            3 => 'bg-orange-500',  // High
+                                            4 => 'bg-red-600',     // Critical
+                                        ];
+                                        $color = $priorityColors[$ticket['pty_id']];
+                                    ?>
+                                    <div class="h-2.5 w-2.5 rounded-full <?= $color ?> me-2"></div>
+                                </div>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <?= $ticket["s_name"] ?>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <?php
+                                    $devName = trim(($ticket["u_firstname"] ?? '') . ' ' . ($ticket["u_lastname"] ?? ''));
+                                    echo $devName !== '' ? htmlspecialchars($devName) : 'No Assigned Developer';
+                                ?>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <?= $ticket["p_name"] ?>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <?php
+                                    $clientName = trim(($ticket["c_firstname"] ?? '') . ' ' . ($ticket["c_lastname"] ?? ''));
+                                    echo $clientName !== '' ? htmlspecialchars($clientName) : 'No Assigned Client';
+                                ?>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <div>
+                                    <a href="?module=ticket&action=showUpdateForm&id=<?= htmlspecialchars($ticket['t_id']); ?>"
+                                        type="button"
+                                        data-modal-target="editTicketModal"
+                                        data-modal-show="editTicketModal"
+                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline block mb-2">Add an update</a>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div>
+                                    <a href="#" 
+                                       class="font-medium text-blue-600 dark:text-blue-500 hover:underline block mb-2 view-description-btn"
+                                       data-description="<?= htmlspecialchars($ticket['t_description']) ?>">
+                                       View description
+                                    </a>
+                                </div>
+                                <div>
+                                    <a href="?module=ticket&action=viewUpdates&ticketId=<?= htmlspecialchars($ticket['t_id']); ?>"
+                                        class="font-medium text-green-600 dark:text-blue-500 hover:underline block mb-2">
+                                        View updates
+                                    </a>
+                                </div>
+                            </td>
+
+                        </tr>
+                    <?php
+                    }
+                    ?>
+                </tbody>
+            </table>
+            <nav class="flex items-center justify-between pt-4" aria-label="Table navigation">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Showing <span class="font-semibold text-gray-900 dark:text-white"><?= count($tickets) ?></span> of <span class="font-semibold text-gray-900 dark:text-white"><?= $totalTickets ?></span>
+                </span>
+                <ul class="inline-flex -space-x-px text-sm">
+                    <li>
+                        <a href="?module=ticket&action=manageTicket&page=<?= max(1, $currentPage - 1) ?>" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                    </li>
+                    <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                        <li>
+                            <a href="?module=ticket&action=manageTicket&page=<?= $i ?>" class="<?= $i === $currentPage ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white' ?> flex items-center justify-center px-3 h-8 leading-tight border border-gray-300 dark:border-gray-700"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+                    <li>
+                        <a href="?module=ticket&action=manageTicket&page=<?= min($totalPages, $currentPage + 1) ?>" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+                    </li>
+                </ul>
+            </nav>
+            <div id="description-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">Ticket Description</h3>
+                    <div id="description-modal-content" class="mb-4 text-gray-700 dark:text-gray-200"></div>
+                    <button id="close-description-modal" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Close</button>
+                </div>
+            </div>
+        </div>
+
+
+    <?php
+    }
+
+    /**
+     * Affiche le formulaire pour ajouter une mise à jour sur un ticket.
+     *
+     * @param int $userId L'ID de l'utilisateur connecté.
+     * @param int $ticketId L'ID du ticket sur lequel ajouter la mise à jour.
+     *
+     * @return void
+     */
+    public function showUpdateForm($userId, $ticketId)
+    {
+        $title = 'Add an update | Ticket Pro +';
+        $heading = 'Add an update to the ticket';
+        $action = 'index.php?module=ticket&action=addUpdate';
+
+?>
+        <title> <?= $title ?> </title>
+        <div class="mt-6">
+            <div class="contenir">
+                <form class="max-w-md mx-auto" action="<?= $action ?>" method="POST" enctype="multipart/form-data">
+                    <h2 class="text-4xl font-extrabold text-white dark:text-white mb-6"><?= $heading ?></h2>
+
+                    <input type="hidden" name="ticketId" value="<?= htmlspecialchars($ticketId) ?>">
+                    <input type="hidden" name="userId" value="<?= htmlspecialchars($userId) ?>">
+
+                    <div class="relative z-0 w-full mb-5 group">
+                        <label for="description" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
+                        <textarea id="description" name="description" rows="4"
+                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Leave a description of the update" required></textarea>
+                    </div>
+                    
+                    <button type="submit"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Submit
+                    </button>
+                </form>
+            </div>
+        </div>
+    <?php
+    }
+
+    public function viewUpdates($updates, $currentPage, $totalPages, $totalUpdates)
+    {
+    ?>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div
+                class="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+                <div>
+                </div>
+                <label for="table-search" class="sr-only">Search</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="table-search-updates"
+                        class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Search for updates">
+                </div>
+            </div>
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+
+                        <th scope="col" class="px-6 py-3">
+                            Ticket ID
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Developer Name
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Modified Date
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Action
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($updates as $update) {
+                    ?>
+                        <tr
+                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+                            <td class="px-6 py-4">
+                                <?= $update["t_id"] ?>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <?= $update["u_firstname"] . " " . $update["u_lastname"] ?>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <?= date('Y-m-d H:i:s', strtotime($update["w_timestamp_modification"])) ?>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <div>
+                                    <a href="#" 
+                                       class="font-medium text-blue-600 dark:text-blue-500 hover:underline block mb-2 view-description-btn"
+                                       data-description="<?= htmlspecialchars($update['w_commentary']) ?>">
+                                       View Commentary
+                                    </a>
+                                </div>
+                            </td>
+
+                        </tr>
+                    <?php
+                    }
+                    ?>
+                </tbody>
+            </table>
+            <nav class="flex items-center justify-between pt-4" aria-label="Table navigation">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Showing <span class="font-semibold text-gray-900 dark:text-white"><?= count($updates) ?></span> of <span class="font-semibold text-gray-900 dark:text-white"><?= $totalUpdates ?></span>
+                </span>
+                <ul class="inline-flex -space-x-px text-sm">
+                    <li>
+                        <a href="?module=ticket&action=manageTicket&page=<?= max(1, $currentPage - 1) ?>" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                    </li>
+                    <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                        <li>
+                            <a href="?module=ticket&action=manageTicket&page=<?= $i ?>" class="<?= $i === $currentPage ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white' ?> flex items-center justify-center px-3 h-8 leading-tight border border-gray-300 dark:border-gray-700"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+                    <li>
+                        <a href="?module=ticket&action=manageTicket&page=<?= min($totalPages, $currentPage + 1) ?>" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+                    </li>
+                </ul>
+            </nav>
+                <div id="description-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">Update Description</h3>
+                        <div id="description-modal-content" class="mb-4 text-gray-700 dark:text-gray-200"></div>
+                        <button id="close-description-modal" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Close</button>
+                    </div>
+                </div>
+        </div>
+
+
+    <?php
+    }
+    
 }
 ?>
