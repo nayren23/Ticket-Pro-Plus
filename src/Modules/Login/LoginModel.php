@@ -5,6 +5,8 @@ namespace TicketProPlus\App\Modules\Login;
 
 use PDO, PDOException, TicketProPlus\App\Core;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
 class LoginModel extends Core\GenericModel
 {
 

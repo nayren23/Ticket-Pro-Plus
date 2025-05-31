@@ -7,6 +7,9 @@ require __DIR__ . '/../../../vendor/autoload.php'; // Chemin relatif vers l'auto
 use PDO, PDOException, TicketProPlus\App\Core;
 use ZxcvbnPhp\Zxcvbn;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
+
 class UserModel extends Core\GenericModel
 {
     public function addUser()

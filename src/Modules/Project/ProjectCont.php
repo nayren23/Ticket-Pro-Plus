@@ -4,6 +4,8 @@ namespace TicketProPlus\App\Modules\Project;
 
 use TicketProPlus\App\Core;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
 
 class ProjectCont extends Core\GenericController
 {
@@ -42,13 +44,12 @@ class ProjectCont extends Core\GenericController
     public function addProject()
     {
         try {
-            if($this->model->addProject()){
+            if ($this->model->addProject()) {
                 $_SESSION['toast'] = [
-                'type' => Core\ToastType::SUCCESS->value,
-                'message' => 'Project successfully created!'
+                    'type' => Core\ToastType::SUCCESS->value,
+                    'message' => 'Project successfully created!'
                 ];
             };
-            
         } catch (\Exception $e) {
             $_SESSION['toast'] = [
                 'type' => Core\ToastType::ERROR->value,
@@ -103,7 +104,7 @@ class ProjectCont extends Core\GenericController
             $projectId = $_GET['id'];
 
             $project = $this->model->getProjectById($projectId);
-            
+
             if ($project) {
                 $this->view->showProjectForm($project, null); // Pass the project data to the view($client);
             } else {
@@ -127,10 +128,10 @@ class ProjectCont extends Core\GenericController
         $description = $_POST['description'];
         $dueDateRaw = $_POST['due_date'];
         $dateTime = \DateTime::createFromFormat('m/d/Y', $dueDateRaw);
-        $dueDate = $dateTime->format('Y-m-d') .' 00:00:00';
+        $dueDate = $dateTime->format('Y-m-d') . ' 00:00:00';
         $closed = $_POST['closed'] ?? 0;
         $clientId = empty($_POST['clientId']) ? null : $_POST['clientId'];
-        
+
         $result = $this->model->updateProject($projectId, $name, $description, $dueDate, $closed, $clientId);
 
         if ($result) {
@@ -143,21 +144,21 @@ class ProjectCont extends Core\GenericController
         header('Location: index.php?module=project&action=manageProject');
     }
 
-/**
- * Orchestre à la vue d'afficher le formulaire de projet avec la liste des clients.
- *
- * @return void affiche le formulaire de projet avec la liste des clients si l'ID du projet est fourni,
- *               avec un message d'erreur si le projet n'est pas trouvé ou si l'ID n'est pas fourni.
- */
+    /**
+     * Orchestre à la vue d'afficher le formulaire de projet avec la liste des clients.
+     *
+     * @return void affiche le formulaire de projet avec la liste des clients si l'ID du projet est fourni,
+     *               avec un message d'erreur si le projet n'est pas trouvé ou si l'ID n'est pas fourni.
+     */
 
     public function addClient()
     {
-         if (isset($_GET['projectId'])) {
+        if (isset($_GET['projectId'])) {
             $projectId = $_GET['projectId'];
 
             $project = $this->model->getProjectById($projectId);
             $clients = $this->model->getAllClients();
-            
+
             if ($project) {
                 $this->view->showProjectForm($project, $clients);
             } else {
@@ -173,7 +174,7 @@ class ProjectCont extends Core\GenericController
      *
      * @return void affiche les détails du projet correspondant à l'ID donné si l'ID est fourni,
      *               avec un message d'erreur si le projet n'est pas trouvé ou si l'ID n'est pas fourni.
-     */ 
+     */
     public function showProjectDetails()
     {
         if (isset($_GET['projectId'])) {
@@ -184,6 +185,4 @@ class ProjectCont extends Core\GenericController
             echo "Project ID not provided.";
         }
     }
-
-
 }

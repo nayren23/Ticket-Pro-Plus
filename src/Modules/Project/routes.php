@@ -5,9 +5,12 @@ namespace TicketProPlus\App\Modules\Project;
 use TicketProPlus\App\Core\Auth\Role;
 use TicketProPlus\App\Core\Auth\Authorization;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
+
 $controller = new ProjectCont();
 
-$action = $_GET['action'];
+$action = $_GET['action'] ?? 'manageProject';
 
 switch ($action) {
     case 'manageProject':
@@ -25,7 +28,7 @@ switch ($action) {
         Authorization::requireRole([Role::ADMIN]);
         $controller->showAddProjectForm();
         break;
-    
+
     case 'deleteProject':
         Authorization::requireRole([Role::ADMIN]);
         $projectIdToDelete = $_POST['id'];
@@ -57,5 +60,3 @@ switch ($action) {
         include __DIR__ . '/../../../public/errors/404.html';
         break;
 }
-
-?>

@@ -5,9 +5,12 @@ namespace TicketProPlus\App\Modules\Client;
 use TicketProPlus\App\Core\Auth\Role;
 use TicketProPlus\App\Core\Auth\Authorization;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
+
 $controller = new ClientCont();
 
-$action = $_GET['action'];
+$action = $_GET['action'] ?? 'manageClient';
 
 switch ($action) {
     case 'manageClient':
@@ -50,7 +53,6 @@ switch ($action) {
         Authorization::requireRole([Role::ADMIN, Role::DEVELOPER, Role::REPORTER]);
         $controller->viewClient();
         break;
-
 
     default:
         http_response_code(404);

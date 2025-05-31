@@ -54,6 +54,7 @@ use TicketProPlus\App\Core\Auth\Authorization;
     <script src="./src/Modules/Ticket/TicketScript.js"></script>
     <script src="./public/assets/js/passwordValidation.js"></script>
     <script src="./src/Core/utils.js"></script>
+
 </body>
 
 </html>

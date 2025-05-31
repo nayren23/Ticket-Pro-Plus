@@ -4,6 +4,8 @@ namespace TicketProPlus\App\Modules\Client;
 
 use PDO, PDOException, TicketProPlus\App\Core;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
 class ClientModel extends Core\GenericModel
 {
     /**
@@ -106,7 +108,7 @@ class ClientModel extends Core\GenericModel
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
-   
+
     /**
      * Met à jour le client correspondant à l'ID donné.
      *
@@ -130,13 +132,13 @@ class ClientModel extends Core\GenericModel
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $_SESSION['toast'] = [
+            $_SESSION['toast'] = [
                 'type' => Core\ToastType::ERROR->value,
                 'message' => 'Invalid email format.'
             ];
             return false;
         }
-    
+
         if ($projectId) {
             $sql = "UPDATE tp_project SET c_id = :client_id WHERE p_id = :project_id";
             $stmt = $this->conn->prepare($sql);
@@ -144,8 +146,7 @@ class ClientModel extends Core\GenericModel
                 ':client_id' => $clientId,
                 ':project_id' => $projectId
             ]);
-        }
-        else{
+        } else {
             $sql = "UPDATE tp_client SET c_firstname = :firstname, c_lastname = :lastname, c_email = :email WHERE c_id = :client_id";
             $stmt = $this->conn->prepare($sql);
             return $stmt->execute([
@@ -179,7 +180,7 @@ class ClientModel extends Core\GenericModel
     {
         return htmlspecialchars(strip_tags(trim($data)));
     }
-    
+
     /**
      * Vérifie si l'email existe déjà dans la base de données.
      * 
@@ -223,9 +224,8 @@ class ClientModel extends Core\GenericModel
     public function getAllProjectsNoClient()
     {
         $sql = "SELECT p_id, p_name FROM tp_project WHERE c_id IS NULL";
-        $stmt = $this->conn->prepare($sql); 
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
-
 }

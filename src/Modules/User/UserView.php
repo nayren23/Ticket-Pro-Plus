@@ -4,6 +4,10 @@ namespace TicketProPlus\App\Modules\User;
 
 use TicketProPlus\App\Core;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
+
+
 class UserView extends Core\GenericView
 {
 

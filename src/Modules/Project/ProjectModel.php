@@ -4,6 +4,9 @@ namespace TicketProPlus\App\Modules\Project;
 
 use PDO, PDOException, TicketProPlus\App\Core;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
+
 class ProjectModel extends Core\GenericModel
 {
 
@@ -16,7 +19,7 @@ class ProjectModel extends Core\GenericModel
     public function getAllClients()
     {
         $sql = "SELECT c_id, c_firstname, c_lastname FROM tp_client";
-        $stmt = $this->conn->prepare($sql); 
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -36,7 +39,7 @@ class ProjectModel extends Core\GenericModel
             $creationDate = date('Y-m-d H:i:s');
             $dueDateRaw = $this->sanitize($_POST['due_date']);
             $dateTime = \DateTime::createFromFormat('m/d/Y', $dueDateRaw);
-            $dueDate = $dateTime->format('Y-m-d') .' 00:00:00';
+            $dueDate = $dateTime->format('Y-m-d') . ' 00:00:00';
             $closed = isset($_POST['closed']) ? true : false;
             $clientId = empty($_POST['clientId']) ? null : $this->sanitize($_POST['clientId']);
 
@@ -86,10 +89,10 @@ class ProjectModel extends Core\GenericModel
      */
     public function getProjectsWithPagination(int $offset, int $limit, $clientId = null): array
     {
-         $sql = "SELECT p.*, c.c_firstname, c.c_lastname
+        $sql = "SELECT p.*, c.c_firstname, c.c_lastname
             FROM tp_project p
             LEFT JOIN tp_client c ON p.c_id = c.c_id";
-            
+
         $params = [];
 
         if (isset($clientId) && $clientId) {
@@ -104,7 +107,7 @@ class ProjectModel extends Core\GenericModel
         if (isset($params[':client_id'])) {
             $stmt->bindParam(':client_id', $params[':client_id'], PDO::PARAM_INT);
         }
-        
+
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
 
@@ -169,7 +172,7 @@ class ProjectModel extends Core\GenericModel
      *
      * @return bool renvoie true si la mise à jour est effectuée, false sinon.
      */
-    public function updateProject($projectId, $name, $description, $dueDate, $closed, $clientId) : bool
+    public function updateProject($projectId, $name, $description, $dueDate, $closed, $clientId): bool
     {
         if ($clientId !== null) {
             $sql = "UPDATE tp_project SET p_name = :name, p_description = :description, p_due_date = :due_date, p_closed = :closed, c_id = :client_id WHERE p_id = :project_id";
@@ -182,8 +185,7 @@ class ProjectModel extends Core\GenericModel
                 ':project_id' => $projectId,
                 ':client_id' => $clientId
             ]);
-        }
-        else{
+        } else {
             $sql = "UPDATE tp_project SET p_name = :name, p_description = :description, p_due_date = :due_date, p_closed = :closed, c_id = NULL WHERE p_id = :project_id";
             $stmt = $this->conn->prepare($sql);
             return $stmt->execute([

@@ -4,6 +4,10 @@ namespace TicketProPlus\App\Modules\Ticket;
 
 use TicketProPlus\App\Core;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
+
+
 class TicketView extends Core\GenericView
 {
 
@@ -701,15 +705,15 @@ class TicketView extends Core\GenericView
                 <form class="max-w-md mx-auto" enctype="multipart/form-data">
                     <h2 class="text-4xl font-extrabold text-white dark:text-white mb-6"><?= $heading ?></h2>
 
-                    <div class="relative z-0 w-full mb-5 group">
+                    <div class="relative z-0 w-full mb-5 group cursor-not-allowed">
                         <label for="description" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400" disabled>Description</label>
                         <textarea id="description" name="description" rows="4"
-                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-not-allowed"
                             placeholder="Leave a description of the ticket" required disabled><?= $descriptionValue ?></textarea>
                     </div>
 
 
-                    <div class="max-w-md mx-auto mb-5">
+                    <div class="max-w-md mx-auto mb-5 cursor-not-allowed">
                         <div class="relative max-w-md mx-auto mb-5 text-sm font-medium text-gray-500 dark:text-gray-400">
                             <label class="block mb-1" disabled>Due date</label>
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -718,55 +722,49 @@ class TicketView extends Core\GenericView
                                 </svg>
                             </div>
                             <input id="datepicker-autohide" datepicker datepicker-autohide type="text"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-not-allowed"
                                 placeholder="Select date" value="<?= $dueDateValue ?>" name="due_date" disabled required>
                         </div>
 
 
-                        <div class="max-w-md mx-auto mb-5 mt-5">
-                            <label for="clientId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Associate a client</label>
-                            <select id="clientId" name="clientId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <div class="max-w-md mx-auto mb-5 mt-5 cursor-not-allowed">
+                            <label for="clientId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400" disabled>Client Associated</label>
+                            <select id="clientId" name="clientId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
                                 <option value="">No client associated</option>
-                                <?php if ($clients !== null): ?>
-                                    <?php foreach ($clients as $client): ?>
-                                        <option value="<?= htmlspecialchars($client['c_id']) ?>" <?= ($clientId == $client['c_id']) ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($client['c_firstname'] . ' ' . $client['c_lastname']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
+                                <?php if ($clientId !== null): ?>
+                                    <option value="" selected>
+                                        <?= htmlspecialchars($ticket['c_firstname'] . ' ' . $ticket['c_lastname']) ?>
+                                    </option>
                                 <?php endif; ?>
                             </select>
                         </div>
 
-                        <div class="max-w-md mx-auto mb-5">
-                            <label for="projectId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Associate a project</label>
-                            <select id="projectId" name="projectId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <?php if ($projects !== null): ?>
-                                    <?php foreach ($projects as $project): ?>
-                                        <option value="<?= htmlspecialchars($project['p_id']) ?>" <?= ($projectId == $project['p_id']) ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($project['p_name']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
+                        <div class="max-w-md mx-auto mb-5 cursor-not-allowed">
+                            <label for="projectId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400" disabled>Project Associated</label>
+                            <select id="projectId" name="projectId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
+                                <?php if ($projectId !== null): ?>
+                                    <option value="" selected>
+                                        <?= htmlspecialchars($ticket['p_name']) ?>
+                                    </option>
                                 <?php endif; ?>
                             </select>
                         </div>
 
-                        <div class="max-w-md mx-auto mb-5">
-                            <label for="developerId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Assign developer</label>
-                            <select id="developerId" name="developerId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option value="">No developer assigned</option>
-                                <?php if ($developers !== null): ?>
-                                    <?php foreach ($developers as $dev): ?>
-                                        <option value="<?= htmlspecialchars($dev['u_id']) ?>" <?= (isset($developerId) && $developerId == $dev['u_id']) ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($dev['u_firstname'] . ' ' . $dev['u_lastname']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
+                        <div class="max-w-md mx-auto mb-5 cursor-not-allowed">
+                            <label for="developerId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400" disabled>Developer Assigned</label>
+                            <select id="developerId" name="developerId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
+                                <option value="">No developer associated</option>
+                                <?php if ($developerId !== null): ?>
+                                    <option value="" selected>
+                                        <?= htmlspecialchars($ticket['u_firstname'] . ' ' . $ticket['u_lastname']) ?>
+                                    </option>
                                 <?php endif; ?>
                             </select>
                         </div>
 
-                        <div class="max-w-md mx-auto mb-5">
-                            <label for="statusId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Status</label>
-                            <select id="statusId" name="statusId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <div class="max-w-md mx-auto mb-5 cursor-not-allowed">
+                            <label for="statusId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400" disabled>Status</label>
+                            <select id="statusId" name="statusId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
                                 <option value="1" <?= ($statusValue == 1) ? 'selected' : '' ?>>New</option>
                                 <option value="2" <?= ($statusValue == 2) ? 'selected' : '' ?>>In Progress</option>
                                 <option value="3" <?= ($statusValue == 3) ? 'selected' : '' ?>>Resolved</option>
@@ -774,9 +772,9 @@ class TicketView extends Core\GenericView
                             </select>
                         </div>
 
-                        <div class="max-w-md mx-auto mb-5">
-                            <label for="priorityId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Priority</label>
-                            <select id="priorityId" name="priorityId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <div class="max-w-md mx-auto mb-5 cursor-not-allowed">
+                            <label for="priorityId" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400" disabled>Priority</label>
+                            <select id="priorityId" name="priorityId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
                                 <option value="1" <?= ($priorityValue == 1) ? 'selected' : '' ?>>Low</option>
                                 <option value="2" <?= ($priorityValue == 2) ? 'selected' : '' ?>>Medium</option>
                                 <option value="3" <?= ($priorityValue == 3) ? 'selected' : '' ?>>High</option>
@@ -784,11 +782,14 @@ class TicketView extends Core\GenericView
                             </select>
                         </div>
 
-
-                        <button type="submit"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            <?= ($ticketToEdit === null) ? 'Submit' : 'Save Changes' ?>
-                        </button>
+                        <td class="px-6 py-4">
+                            <div>
+                                <a href="?module=ticket&action=viewUpdates&ticketId=<?= htmlspecialchars($ticket['t_id']); ?>"
+                                    class="font-medium text-green-600 dark:text-blue-500 hover:underline block mb-2">
+                                    View updates
+                                </a>
+                            </div>
+                        </td>
                 </form>
             </div>
         </div>

@@ -5,6 +5,9 @@ namespace TicketProPlus\App\Modules\User;
 use TicketProPlus\App\Core\Auth\Role;
 use TicketProPlus\App\Core\Auth\Authorization;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
+
 $controller = new UserCont();
 
 $action = $_GET['action'] ?? 'showAddUserForm'; #TODO à changer

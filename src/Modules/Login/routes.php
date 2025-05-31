@@ -5,6 +5,9 @@ namespace TicketProPlus\App\Modules\Login;
 use TicketProPlus\App\Core\Auth\Role;
 use TicketProPlus\App\Core\Auth\Authorization;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
+
 $controller = new LoginCont();
 
 $action = $_GET['action'] ?? 'showLoginForm';
@@ -12,11 +15,7 @@ $action = $_GET['action'] ?? 'showLoginForm';
 switch ($action) {
     case 'showLoginForm':
         if (!isset($_SESSION['user']['r_id']))
-            $isLogged = false;
-        else
-            $isLogged = true;
-        Authorization::requireRole([Role::VISITOR], null, $isLogged);
-        $controller->showLoginForm();
+            $controller->showLoginForm();
         break;
 
     case 'authenticate':

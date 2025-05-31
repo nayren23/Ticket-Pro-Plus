@@ -4,6 +4,9 @@ namespace TicketProPlus\App\Modules\Ticket;
 
 use TicketProPlus\App\Core;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
+
 
 class TicketCont extends Core\GenericController
 {

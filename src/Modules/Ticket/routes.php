@@ -5,9 +5,12 @@ namespace TicketProPlus\App\Modules\Ticket;
 use TicketProPlus\App\Core\Auth\Role;
 use TicketProPlus\App\Core\Auth\Authorization;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
+
 $controller = new TicketCont();
 
-$action = $_GET['action'];
+$action = $_GET['action'] ?? 'manageTicket';
 
 switch ($action) {
     case 'addTicket':

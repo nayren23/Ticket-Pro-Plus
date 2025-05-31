@@ -1,6 +1,6 @@
 <?php
 
-namespace TicketProPlus\App\Modules\Admin;
+namespace TicketProPlus\App\Modules\Search;
 
 use TicketProPlus\App\Core\Auth\Role;
 use TicketProPlus\App\Core\Auth\Authorization;
@@ -8,14 +8,14 @@ use TicketProPlus\App\Core\Auth\Authorization;
 if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
     die();
 
-$controller = new AdminCont();
+$controller = new SearchCont();
 
-$action = $_GET['action'] ?? 'stats'; #TODO à changer
+$action = $_GET['action'] ?? 'search';
 
 switch ($action) {
-    case 'stats':
-        Authorization::requireRole([Role::ADMIN, Role::DEVELOPER, Role::REPORTER]);
-        $controller->stats();
+    case 'search':
+        Authorization::requireRole([Role::ADMIN, Role::REPORTER, Role::DEVELOPER]);
+        $controller->globalSearch();
         break;
 
     default:

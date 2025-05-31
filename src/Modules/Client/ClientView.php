@@ -4,6 +4,8 @@ namespace TicketProPlus\App\Modules\Client;
 
 use TicketProPlus\App\Core;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
 class ClientView extends Core\GenericView
 {
 

@@ -4,6 +4,10 @@ namespace TicketProPlus\App\Modules\Ticket;
 
 use PDO, PDOException, TicketProPlus\App\Core;
 
+if (constant("APP_SECRET") != $_ENV["APP_SECRET"])
+    die();
+
+
 class TicketModel extends Core\GenericModel
 {
     /**
